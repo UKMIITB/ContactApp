@@ -1,0 +1,5 @@
+<resources>
+    <string name="app_name">ChatListAssignment</string>
+    <string name="dummy_name">Dummy Name</string>
+    <string name="dummy_number">9876543210</string>
+</resources>

@@ -13,6 +13,7 @@ import android.widget.Toast;
 
 import androidx.fragment.app.Fragment;
 import androidx.lifecycle.ViewModelProvider;
+import androidx.viewpager.widget.ViewPager;
 
 import com.example.chatlistassignment.R;
 import com.example.chatlistassignment.model.User;
@@ -23,8 +24,8 @@ import java.util.Calendar;
 public class DataEntryFragment extends Fragment implements View.OnClickListener {
 
     EditText editTextUserName, editTextContactNumber;
-    Button buttonDatePicker, buttonSave, buttonProfilePic;
-    TextView textViewBirthday;
+    Button buttonSave, buttonProfilePic;
+    TextView textViewBirthday, textViewDatePicker;
 
     FragmentViewModel fragmentViewModel;
 
@@ -46,14 +47,15 @@ public class DataEntryFragment extends Fragment implements View.OnClickListener 
     private void init(View view) {
         editTextUserName = view.findViewById(R.id.edit_text_username);
         editTextContactNumber = view.findViewById(R.id.edit_text_contact_number);
-        buttonDatePicker = view.findViewById(R.id.button_date_picker);
+        textViewDatePicker = view.findViewById(R.id.text_view_date_picker);
         buttonSave = view.findViewById(R.id.button_save);
         buttonProfilePic = view.findViewById(R.id.button_profile_pic);
         textViewBirthday = view.findViewById(R.id.text_view_birthday);
 
-        buttonDatePicker.setOnClickListener(this);
+        textViewDatePicker.setOnClickListener(this);
         buttonSave.setOnClickListener(this);
         buttonProfilePic.setOnClickListener(this);
+
     }
 
     @Override
@@ -65,7 +67,7 @@ public class DataEntryFragment extends Fragment implements View.OnClickListener 
             case R.id.button_profile_pic:
                 buttonProfilePicClicked();
                 break;
-            case R.id.button_date_picker:
+            case R.id.text_view_date_picker:
                 buttonDatePickerClicked();
                 break;
         }
@@ -109,6 +111,13 @@ public class DataEntryFragment extends Fragment implements View.OnClickListener 
 
         clearInputFields();
 
+        changeTabChatList();
+
+    }
+
+    private void changeTabChatList() {
+        ViewPager viewPager = getActivity().findViewById(R.id.view_pager);
+        viewPager.setCurrentItem(0, true);
     }
 
     private void clearInputFields() {

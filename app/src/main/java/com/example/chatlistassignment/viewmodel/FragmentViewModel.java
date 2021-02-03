@@ -8,6 +8,7 @@ import android.widget.Toast;
 
 import androidx.core.content.ContextCompat;
 import androidx.lifecycle.LiveData;
+import androidx.lifecycle.MutableLiveData;
 import androidx.lifecycle.ViewModel;
 
 import com.example.chatlistassignment.R;
@@ -26,6 +27,17 @@ import io.reactivex.schedulers.Schedulers;
 public class FragmentViewModel extends ViewModel {
 
     private UserDatabase userDatabase;
+    private Toast toast;
+
+    public static MutableLiveData<String> queryString = new MutableLiveData<>();
+
+    public static void setQueryString(String query) {
+        queryString.setValue(query);
+    }
+
+    public LiveData<String> getQueryString() {
+        return queryString;
+    }
 
     public void addUser(User user, Context context) {
         userDatabase = UserDatabase.getInstance(context);
@@ -55,6 +67,11 @@ public class FragmentViewModel extends ViewModel {
     public LiveData<List<User>> getAllUser(Context context) {
         userDatabase = UserDatabase.getInstance(context);
         return userDatabase.userDao().getAllUser();
+    }
+
+    public LiveData<List<User>> queryAllUser(Context context, String query) {
+        userDatabase = UserDatabase.getInstance(context);
+        return userDatabase.userDao().queryAllUser(query);
     }
 
     public void deleteUser(User user, Context context) {
@@ -107,8 +124,13 @@ public class FragmentViewModel extends ViewModel {
                 });
     }
 
+
     private void successToast(String message, Context context) {
-        Toast toast = Toast.makeText(context, message, Toast.LENGTH_SHORT);
+
+        if (toast != null)
+            toast.cancel();
+
+        toast = Toast.makeText(context, message, Toast.LENGTH_SHORT);
         View view = toast.getView();
 
         view.getBackground().setColorFilter(ContextCompat.getColor(context, R.color.teal_200), PorterDuff.Mode.SRC_IN);
@@ -117,7 +139,11 @@ public class FragmentViewModel extends ViewModel {
     }
 
     private void failureToast(String message, Context context) {
-        Toast toast = Toast.makeText(context, message, Toast.LENGTH_SHORT);
+
+        if (toast != null)
+            toast.cancel();
+
+        toast = Toast.makeText(context, message, Toast.LENGTH_SHORT);
         View view = toast.getView();
 
         view.getBackground().setColorFilter(ContextCompat.getColor(context, R.color.red), PorterDuff.Mode.SRC_IN);

@@ -2,6 +2,7 @@ package com.example.chatlistassignment.fragments;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -31,13 +32,17 @@ public class ChatListFragment extends Fragment implements ItemClickListener {
     RecyclerViewAdapter recyclerViewAdapter;
     ArrayList<User> userArrayList;
 
+    ArrayList<User> queryArrayList;
+
     FragmentViewModel fragmentViewModel;
+
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         fragmentViewModel = new ViewModelProvider(this).get(FragmentViewModel.class);
         userArrayList = new ArrayList<>();
+        queryArrayList = new ArrayList<>();
     }
 
     @Override
@@ -48,7 +53,32 @@ public class ChatListFragment extends Fragment implements ItemClickListener {
         init(view);
 
         observeForDbChanges();
+        observeQueryString();
+
         return view;
+    }
+
+    private void observeQueryString() {
+        fragmentViewModel.getQueryString().observe(this, new Observer<String>() {
+            @Override
+            public void onChanged(String query) {
+                Log.d("TAG", "Inside ChatListFragment: " + query);
+                queryChatList(query);
+            }
+        });
+    }
+
+    private void queryChatList(String query) {
+        query = "%" + query + "%";
+
+        fragmentViewModel.queryAllUser(getContext(), query).observe(this, new Observer<List<User>>() {
+            @Override
+            public void onChanged(List<User> users) {
+                queryArrayList.clear();
+                queryArrayList = (ArrayList<User>) users;
+                recyclerViewAdapter.updateData(queryArrayList);
+            }
+        });
     }
 
     private void observeForDbChanges() {
@@ -69,6 +99,7 @@ public class ChatListFragment extends Fragment implements ItemClickListener {
 
         recyclerViewChatList.setLayoutManager(layoutManager);
         recyclerViewChatList.setAdapter(recyclerViewAdapter);
+
     }
 
     @Override
@@ -89,5 +120,4 @@ public class ChatListFragment extends Fragment implements ItemClickListener {
                 break;
         }
     }
-
 }

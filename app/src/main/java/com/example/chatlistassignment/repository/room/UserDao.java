@@ -26,4 +26,7 @@ public interface UserDao {
 
     @Update
     Completable updateUser(User user);
+
+    @Query("select * from userdb where name like :query or contactNumber like :query")
+    LiveData<List<User>> queryAllUser(String query);
 }

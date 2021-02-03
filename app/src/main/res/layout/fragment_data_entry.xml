@@ -1,7 +1,10 @@
 <androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
-    android:layout_height="match_parent">
+    android:layout_height="match_parent"
+    android:layout_marginLeft="16dp"
+    android:layout_marginTop="16dp"
+    android:layout_marginRight="16dp">
 
     <EditText
         android:id="@+id/edit_text_username"
@@ -16,19 +19,23 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginTop="16dp"
-        android:digits="*1234567890#"
+        android:digits="1234567890"
         android:hint="@string/contact_number"
+        android:inputType="number|textNoSuggestions"
+        android:maxLength="10"
         app:layout_constraintLeft_toLeftOf="parent"
         app:layout_constraintTop_toBottomOf="@id/edit_text_username" />
 
-    <Button
-        android:id="@+id/button_date_picker"
+    <TextView
+        android:id="@+id/text_view_date_picker"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginTop="16dp"
         android:backgroundTint="@color/purple_200"
+        android:drawableRight="@drawable/ic_baseline_calendar_today_24"
         android:gravity="center"
-        android:text="@string/select_birthday"
+        android:text="Select Birthday   "
+        android:textSize="24sp"
         app:layout_constraintLeft_toLeftOf="parent"
         app:layout_constraintRight_toRightOf="parent"
         app:layout_constraintTop_toBottomOf="@id/edit_text_contact_number" />
@@ -42,7 +49,7 @@
         android:text="@string/birthday_selected"
         android:textSize="20sp"
         app:layout_constraintLeft_toLeftOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/button_date_picker" />
+        app:layout_constraintTop_toBottomOf="@id/text_view_date_picker" />
 
     <Button
         android:id="@+id/button_profile_pic"

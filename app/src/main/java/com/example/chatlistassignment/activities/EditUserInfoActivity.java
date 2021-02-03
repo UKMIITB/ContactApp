@@ -97,5 +97,7 @@ public class EditUserInfoActivity extends AppCompatActivity implements View.OnCl
 
         User userUpdated = new User(userName, contactNumber, R.drawable.ic_baseline_person_24, birthDate);
         fragmentViewModel.updateUser(userUpdated, this);
+
+        onBackPressed();
     }
 }

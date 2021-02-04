@@ -1,5 +1,6 @@
 package com.example.chatlistassignment.activities;
 
+import android.net.Uri;
 import android.os.Bundle;
 import android.widget.ImageView;
 import android.widget.TextView;
@@ -25,7 +26,11 @@ public class DetailedUserInfoActivity extends AppCompatActivity {
     }
 
     private void setData(User user) {
-        imageViewProfilePic.setImageResource(user.getProfilePic());
+
+        if (user.getProfilePic() == null)
+            imageViewProfilePic.setImageResource(R.drawable.ic_baseline_person_24);
+        else
+            imageViewProfilePic.setImageURI(Uri.parse(user.getProfilePic()));
 
         String nameBuilder = "Name: " + user.getName();
         String numberBuilder = "Contact No: " + user.getContactNumber();

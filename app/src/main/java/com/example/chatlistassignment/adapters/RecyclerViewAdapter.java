@@ -1,6 +1,7 @@
 package com.example.chatlistassignment.adapters;
 
 import android.content.Context;
+import android.net.Uri;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -39,9 +40,14 @@ public class RecyclerViewAdapter extends RecyclerView.Adapter<RecyclerViewAdapte
     @Override
     public void onBindViewHolder(@NonNull ViewHolder holder, int position) {
         User user = userArrayList.get(position);
-        holder.imageViewProfilePic.setImageResource(user.getProfilePic());
         holder.textViewName.setText(user.getName());
         holder.textViewNumber.setText(user.getContactNumber());
+
+        if (user.getProfilePic() == null)
+            holder.imageViewProfilePic.setImageResource(R.drawable.ic_baseline_person_24);
+        else
+            holder.imageViewProfilePic.setImageURI(Uri.parse(user.getProfilePic()));
+
     }
 
     @Override

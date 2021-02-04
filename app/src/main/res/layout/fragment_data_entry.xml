@@ -52,20 +52,30 @@
         app:layout_constraintTop_toBottomOf="@id/text_view_date_picker" />
 
     <Button
-        android:id="@+id/button_profile_pic"
-        android:layout_width="match_parent"
+        android:id="@+id/button_select_profile_pic"
+        android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginTop="16dp"
-        android:backgroundTint="#AAA7AE"
+        android:backgroundTint="@color/purple_500"
         android:gravity="center"
         android:text="@string/select_profile_pic"
         app:layout_constraintLeft_toLeftOf="parent"
         app:layout_constraintRight_toRightOf="parent"
         app:layout_constraintTop_toBottomOf="@id/text_view_birthday" />
 
+    <ImageView
+        android:id="@+id/image_view_profile_pic"
+        android:layout_width="match_parent"
+        android:layout_height="200dp"
+        android:src="@drawable/ic_baseline_person_24"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintRight_toRightOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/button_select_profile_pic" />
+
+
     <Button
         android:id="@+id/button_save"
-        android:layout_width="wrap_content"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginTop="16dp"
         android:backgroundTint="@color/teal_700"
@@ -74,5 +84,5 @@
         android:text="@string/save"
         app:layout_constraintLeft_toLeftOf="parent"
         app:layout_constraintRight_toRightOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/button_profile_pic" />
+        app:layout_constraintTop_toBottomOf="@id/image_view_profile_pic" />
 </androidx.constraintlayout.widget.ConstraintLayout>

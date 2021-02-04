@@ -95,7 +95,7 @@ public class EditUserInfoActivity extends AppCompatActivity implements View.OnCl
         int indexOfColon = birthDateString.indexOf(":");
         String birthDate = birthDateString.substring(indexOfColon + 1);
 
-        User userUpdated = new User(userName, contactNumber, R.drawable.ic_baseline_person_24, birthDate);
+        User userUpdated = new User(userName, contactNumber, null, birthDate);
         fragmentViewModel.updateUser(userUpdated, this);
 
         onBackPressed();

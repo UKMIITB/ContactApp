@@ -13,10 +13,10 @@ public class User implements Serializable {
     @PrimaryKey
     @NonNull
     private String contactNumber;
-    private int profilePic;
+    private String profilePic;
     private String dateOfBirth;
 
-    public User(String name, String contactNumber, int profilePic, String dateOfBirth) {
+    public User(String name, String contactNumber, String profilePic, String dateOfBirth) {
         this.name = name;
         this.contactNumber = contactNumber;
         this.profilePic = profilePic;
@@ -42,11 +42,11 @@ public class User implements Serializable {
         this.contactNumber = contactNumber;
     }
 
-    public int getProfilePic() {
+    public String getProfilePic() {
         return profilePic;
     }
 
-    public void setProfilePic(int profilePic) {
+    public void setProfilePic(String profilePic) {
         this.profilePic = profilePic;
     }
 

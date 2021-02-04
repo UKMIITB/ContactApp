@@ -7,9 +7,11 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
+import androidx.annotation.NonNull;
 import androidx.fragment.app.Fragment;
 import androidx.lifecycle.Observer;
 import androidx.lifecycle.ViewModelProvider;
+import androidx.recyclerview.widget.ItemTouchHelper;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
@@ -97,6 +99,7 @@ public class ChatListFragment extends Fragment implements ItemClickListener {
         layoutManager = new LinearLayoutManager(getContext());
         recyclerViewAdapter = new RecyclerViewAdapter(getContext(), userArrayList, this);
 
+        new ItemTouchHelper(itemTouchHelperCallback).attachToRecyclerView(recyclerViewChatList);
         recyclerViewChatList.setLayoutManager(layoutManager);
         recyclerViewChatList.setAdapter(recyclerViewAdapter);
 
@@ -120,4 +123,17 @@ public class ChatListFragment extends Fragment implements ItemClickListener {
                 break;
         }
     }
+
+    ItemTouchHelper.SimpleCallback itemTouchHelperCallback = new ItemTouchHelper.SimpleCallback(0,
+            ItemTouchHelper.RIGHT | ItemTouchHelper.LEFT) {
+        @Override
+        public boolean onMove(@NonNull RecyclerView recyclerView, @NonNull RecyclerView.ViewHolder viewHolder, @NonNull RecyclerView.ViewHolder target) {
+            return false;
+        }
+
+        @Override
+        public void onSwiped(@NonNull RecyclerView.ViewHolder viewHolder, int direction) {
+            fragmentViewModel.deleteUser(userArrayList.get(viewHolder.getAdapterPosition()), getContext());
+        }
+    };
 }

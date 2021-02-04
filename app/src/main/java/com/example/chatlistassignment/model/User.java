@@ -1,20 +1,29 @@
 package com.example.chatlistassignment.model;
 
+import android.content.Intent;
+
 import androidx.annotation.NonNull;
 import androidx.room.Entity;
 import androidx.room.PrimaryKey;
 
 import java.io.Serializable;
+import java.util.Objects;
 
 @Entity(tableName = "UserDB")
 public class User implements Serializable {
 
-    private String name;
-    @PrimaryKey
+
+    @PrimaryKey(autoGenerate = true)
     @NonNull
+    private Integer _id;
+    private String name;
     private String contactNumber;
     private String profilePic;
     private String dateOfBirth;
+
+    public void set_id(@NonNull Integer _id) {
+        this._id = _id;
+    }
 
     public User(String name, String contactNumber, String profilePic, String dateOfBirth) {
         this.name = name;
@@ -24,6 +33,11 @@ public class User implements Serializable {
     }
 
     public User() {
+    }
+
+    @NonNull
+    public Integer get_id() {
+        return _id;
     }
 
     public String getName() {
@@ -56,5 +70,22 @@ public class User implements Serializable {
 
     public void setDateOfBirth(String dateOfBirth) {
         this.dateOfBirth = dateOfBirth;
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        User user = (User) o;
+        return _id.equals(user._id) &&
+                Objects.equals(name, user.name) &&
+                Objects.equals(contactNumber, user.contactNumber) &&
+                Objects.equals(profilePic, user.profilePic) &&
+                Objects.equals(dateOfBirth, user.dateOfBirth);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(_id, name, contactNumber, profilePic, dateOfBirth);
     }
 }

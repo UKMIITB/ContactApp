@@ -11,6 +11,8 @@ import androidx.annotation.NonNull;
 import androidx.fragment.app.Fragment;
 import androidx.lifecycle.Observer;
 import androidx.lifecycle.ViewModelProvider;
+import androidx.lifecycle.ViewModelProviders;
+import androidx.paging.PagedList;
 import androidx.recyclerview.widget.ItemTouchHelper;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
@@ -32,7 +34,6 @@ public class ChatListFragment extends Fragment implements ItemClickListener {
     RecyclerView recyclerViewChatList;
     RecyclerView.LayoutManager layoutManager;
     RecyclerViewAdapter recyclerViewAdapter;
-    ArrayList<User> userArrayList;
 
     ArrayList<User> queryArrayList;
 
@@ -42,8 +43,7 @@ public class ChatListFragment extends Fragment implements ItemClickListener {
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        fragmentViewModel = new ViewModelProvider(this).get(FragmentViewModel.class);
-        userArrayList = new ArrayList<>();
+        fragmentViewModel = ViewModelProviders.of(this).get(FragmentViewModel.class);
         queryArrayList = new ArrayList<>();
     }
 
@@ -53,7 +53,7 @@ public class ChatListFragment extends Fragment implements ItemClickListener {
 
         View view = inflater.inflate(R.layout.fragment_chat_list, container, false);
         init(view);
-
+        fragmentViewModel.init();
         observeForDbChanges();
         observeQueryString();
 
@@ -61,43 +61,46 @@ public class ChatListFragment extends Fragment implements ItemClickListener {
     }
 
     private void observeQueryString() {
-        fragmentViewModel.getQueryString().observe(this, new Observer<String>() {
-            @Override
-            public void onChanged(String query) {
-                Log.d("TAG", "Inside ChatListFragment: " + query);
-                queryChatList(query);
-            }
-        });
+        if(fragmentViewModel != null){
+            fragmentViewModel.getQueryString().observe(this, new Observer<String>() {
+                @Override
+                public void onChanged(String query) {
+                    Log.d("TAG", "Inside ChatListFragment: " + query);
+                    queryChatList(query);
+                }
+            });
+        }
+
     }
 
     private void queryChatList(String query) {
         query = "%" + query + "%";
 
-        fragmentViewModel.queryAllUser(getContext(), query).observe(this, new Observer<List<User>>() {
-            @Override
-            public void onChanged(List<User> users) {
-                queryArrayList.clear();
-                queryArrayList = (ArrayList<User>) users;
-                recyclerViewAdapter.updateData(queryArrayList);
-            }
-        });
+//        fragmentViewModel.queryAllUser(getContext(), query).observe(this, new Observer<List<User>>() {
+//            @Override
+//            public void onChanged(List<User> users) {
+//                queryArrayList.clear();
+//                queryArrayList = (ArrayList<User>) users;
+//                recyclerViewAdapter.submitList(queryArrayList);
+//            }
+//        });
     }
 
     private void observeForDbChanges() {
-        fragmentViewModel.getAllUser(getContext()).observe(this, new Observer<List<User>>() {
+
+        fragmentViewModel.userList.observe(this, new Observer<PagedList<User>>() {
             @Override
-            public void onChanged(List<User> users) {
-                userArrayList.clear();
-                userArrayList = (ArrayList<User>) users;
-                recyclerViewAdapter.updateData(userArrayList);
+            public void onChanged(PagedList<User> users) {
+                recyclerViewAdapter.submitList(users);
             }
         });
+
     }
 
     private void init(View view) {
         recyclerViewChatList = view.findViewById(R.id.recyclerview_chat_list);
         layoutManager = new LinearLayoutManager(getContext());
-        recyclerViewAdapter = new RecyclerViewAdapter(getContext(), userArrayList, this);
+        recyclerViewAdapter = new RecyclerViewAdapter();
 
         new ItemTouchHelper(itemTouchHelperCallback).attachToRecyclerView(recyclerViewChatList);
         recyclerViewChatList.setLayoutManager(layoutManager);
@@ -106,19 +109,19 @@ public class ChatListFragment extends Fragment implements ItemClickListener {
     }
 
     @Override
-    public void onItemClicked(View view, int position) {
+    public void onItemClicked(View view, User user) {
         switch (view.getId()) {
             case R.id.button_delete:
-                fragmentViewModel.deleteUser(userArrayList.get(position), getContext());
+                fragmentViewModel.deleteUser(user);
                 break;
             case R.id.button_edit:
                 Intent intentEditUserInfoActivity = new Intent(getContext(), EditUserInfoActivity.class);
-                intentEditUserInfoActivity.putExtra("User", userArrayList.get(position));
+                intentEditUserInfoActivity.putExtra("User",user);
                 startActivity(intentEditUserInfoActivity);
                 break;
             default:
                 Intent intentDetailedUserInfoActivity = new Intent(getContext(), DetailedUserInfoActivity.class);
-                intentDetailedUserInfoActivity.putExtra("User", userArrayList.get(position));
+                intentDetailedUserInfoActivity.putExtra("User", user);
                 startActivity(intentDetailedUserInfoActivity);
                 break;
         }
@@ -133,7 +136,7 @@ public class ChatListFragment extends Fragment implements ItemClickListener {
 
         @Override
         public void onSwiped(@NonNull RecyclerView.ViewHolder viewHolder, int direction) {
-            fragmentViewModel.deleteUser(userArrayList.get(viewHolder.getAdapterPosition()), getContext());
+           // fragmentViewModel.deleteUser(userArrayList.get(viewHolder.getAdapterPosition()));
         }
     };
 }

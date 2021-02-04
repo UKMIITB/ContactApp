@@ -10,6 +10,8 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
+import androidx.paging.PagedListAdapter;
+import androidx.recyclerview.widget.DiffUtil;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.chatlistassignment.ItemClickListener;
@@ -18,28 +20,45 @@ import com.example.chatlistassignment.model.User;
 
 import java.util.ArrayList;
 
-public class RecyclerViewAdapter extends RecyclerView.Adapter<RecyclerViewAdapter.ViewHolder> {
-
-    Context context;
-    ArrayList<User> userArrayList;
+public class RecyclerViewAdapter extends PagedListAdapter<User,RecyclerViewAdapter.ViewHolder> {
     ItemClickListener itemClickListener;
 
-    public RecyclerViewAdapter(Context context, ArrayList<User> userArrayList, ItemClickListener itemClickListener) {
-        this.context = context;
-        this.userArrayList = userArrayList;
+//    public RecyclerViewAdapter(Context context, ArrayList<User> userArrayList, ItemClickListener itemClickListener) {
+//        this.context = context;
+//        this.userArrayList = userArrayList;
+//        this.itemClickListener = itemClickListener;
+//    }
+
+    public  static DiffUtil.ItemCallback<User> DIFF_CALLBACK = new DiffUtil.ItemCallback<User>() {
+        @Override
+        public boolean areItemsTheSame(@NonNull User oldItem, @NonNull User newItem) {
+            return oldItem.get_id() == newItem.get_id();
+        }
+
+        @Override
+        public boolean areContentsTheSame(@NonNull User oldItem, @NonNull User newItem) {
+            return oldItem.equals(newItem);
+        }
+    };
+
+    public RecyclerViewAdapter() {
+        super(DIFF_CALLBACK);
+    }
+
+    public  void setItemClickListener(ItemClickListener itemClickListener){
         this.itemClickListener = itemClickListener;
     }
 
     @NonNull
     @Override
     public ViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
-        View view = LayoutInflater.from(context).inflate(R.layout.row_chat_data, parent, false);
+        View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.row_chat_data, parent, false);
         return new ViewHolder(view);
     }
 
     @Override
     public void onBindViewHolder(@NonNull ViewHolder holder, int position) {
-        User user = userArrayList.get(position);
+        User user = getItem(position);
         holder.textViewName.setText(user.getName());
         holder.textViewNumber.setText(user.getContactNumber());
 
@@ -50,15 +69,15 @@ public class RecyclerViewAdapter extends RecyclerView.Adapter<RecyclerViewAdapte
 
     }
 
-    @Override
-    public int getItemCount() {
-        return userArrayList == null ? 0 : userArrayList.size();
-    }
-
-    public void updateData(ArrayList<User> userArrayList) {
-        this.userArrayList = userArrayList;
-        notifyDataSetChanged();
-    }
+//    @Override
+//    public int getItemCount() {
+//        return userArrayList == null ? 0 : userArrayList.size();
+//    }
+//
+//    public void updateData(ArrayList<User> userArrayList) {
+//        this.userArrayList = userArrayList;
+//        notifyDataSetChanged();
+//    }
 
     class ViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener {
 
@@ -85,7 +104,7 @@ public class RecyclerViewAdapter extends RecyclerView.Adapter<RecyclerViewAdapte
         @Override
         public void onClick(View view) {
             if (itemClickListener != null)
-                itemClickListener.onItemClicked(view, getAdapterPosition());
+                itemClickListener.onItemClicked(view,getItem(getAdapterPosition()));
         }
     }
 }

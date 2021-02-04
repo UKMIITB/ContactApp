@@ -1,37 +1,61 @@
 package com.example.chatlistassignment.viewmodel;
 
+import android.app.Application;
 import android.content.Context;
 import android.graphics.PorterDuff;
 import android.util.Log;
 import android.view.View;
 import android.widget.Toast;
 
+import androidx.annotation.NonNull;
 import androidx.core.content.ContextCompat;
+import androidx.lifecycle.AndroidViewModel;
 import androidx.lifecycle.LiveData;
 import androidx.lifecycle.MutableLiveData;
 import androidx.lifecycle.ViewModel;
+import androidx.paging.LivePagedListBuilder;
+import androidx.paging.PagedList;
 
 import com.example.chatlistassignment.R;
 import com.example.chatlistassignment.model.User;
+import com.example.chatlistassignment.repository.room.LocalRepository;
 import com.example.chatlistassignment.repository.room.UserDatabase;
+import com.example.chatlistassignment.repository.room.datasource.UserDataSourceFactory;
 
 import java.util.List;
 
 import io.reactivex.CompletableObserver;
 import io.reactivex.android.schedulers.AndroidSchedulers;
-import io.reactivex.annotations.NonNull;
+import io.reactivex.disposables.CompositeDisposable;
 import io.reactivex.disposables.Disposable;
 import io.reactivex.schedulers.Schedulers;
 
 
-public class FragmentViewModel extends ViewModel {
+public class FragmentViewModel extends AndroidViewModel {
 
-    private UserDatabase userDatabase;
+    public  LiveData<PagedList<User>> userList;
+    private UserDataSourceFactory factory;
+    private LocalRepository repository;
+    private CompositeDisposable compositeDisposable = new CompositeDisposable();
+
+    public FragmentViewModel(@NonNull Application application) {
+        super(application);
+    }
+
+    public void init(){
+        repository = new LocalRepository(getApplication());
+        factory = new UserDataSourceFactory(getApplication(),compositeDisposable);
+        PagedList.Config  config = (new PagedList.Config.Builder()).setEnablePlaceholders(false)
+                .setInitialLoadSizeHint(10)
+                .setPageSize(10).build();
+        userList = new LivePagedListBuilder<>(factory,config).build();
+    }
+
     private Toast toast;
 
     public static MutableLiveData<String> queryString = new MutableLiveData<>();
 
-    public static void setQueryString(String query) {
+    public  void setQueryString(String query) {
         queryString.setValue(query);
     }
 
@@ -40,8 +64,8 @@ public class FragmentViewModel extends ViewModel {
     }
 
     public void addUser(User user, Context context) {
-        userDatabase = UserDatabase.getInstance(context);
-        userDatabase.userDao().addUser(user)
+
+        repository.addUser(user)
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(new CompletableObserver() {
@@ -53,30 +77,30 @@ public class FragmentViewModel extends ViewModel {
                     @Override
                     public void onComplete() {
                         Log.d("TAG", "Inside onComplete of addUser in ViewModel");
-                        successToast("User added successfully", context);
+                        successToast("User added successfully");
                     }
 
                     @Override
                     public void onError(@NonNull Throwable e) {
                         Log.d("TAG", "Inside onError of addUser in ViewModel." + e.getMessage());
-                        failureToast(e.getMessage(), context);
+                        failureToast(e.getMessage());
                     }
                 });
     }
 
-    public LiveData<List<User>> getAllUser(Context context) {
-        userDatabase = UserDatabase.getInstance(context);
-        return userDatabase.userDao().getAllUser();
-    }
+//    public LiveData<List<User>> getAllUser(Context context) {
+//        erDatabase.getInstance(context);
+//        return repository.getAllUser();
+//    }
 
     public LiveData<List<User>> queryAllUser(Context context, String query) {
-        userDatabase = UserDatabase.getInstance(context);
-        return userDatabase.userDao().queryAllUser(query);
+
+        return repository.queryAllUser(query);
     }
 
-    public void deleteUser(User user, Context context) {
-        userDatabase = UserDatabase.getInstance(context);
-        userDatabase.userDao().deleteUser(user)
+    public void deleteUser(User user) {
+
+       repository.deleteUser(user)
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(new CompletableObserver() {
@@ -88,20 +112,19 @@ public class FragmentViewModel extends ViewModel {
                     @Override
                     public void onComplete() {
                         Log.d("TAG", "Inside onComplete of deleteUser in ViewModel");
-                        successToast("User data removed successfully", context);
+                        successToast("User data removed successfully");
                     }
 
                     @Override
                     public void onError(@NonNull Throwable e) {
                         Log.d("TAG", "Inside onError of deleteUser in ViewModel");
-                        failureToast(e.getMessage(), context);
+                        failureToast(e.getMessage());
                     }
                 });
     }
 
-    public void updateUser(User user, Context context) {
-        userDatabase = UserDatabase.getInstance(context);
-        userDatabase.userDao().updateUser(user)
+    public void updateUser(User user) {
+        repository.updateUser(user)
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(new CompletableObserver() {
@@ -113,42 +136,48 @@ public class FragmentViewModel extends ViewModel {
                     @Override
                     public void onComplete() {
                         Log.d("TAG", "Inside onComplete of updateUser in ViewModel");
-                        successToast("User Data updated successfully", context);
+                        successToast("User Data updated successfully");
                     }
 
                     @Override
                     public void onError(@NonNull Throwable e) {
                         Log.d("TAG", "Inside onError of updateUser in ViewModel");
-                        failureToast(e.getMessage(), context);
+                        failureToast(e.getMessage());
                     }
                 });
     }
 
 
-    private void successToast(String message, Context context) {
+    private void successToast(String message) {
 
         if (toast != null)
             toast.cancel();
 
-        toast = Toast.makeText(context, message, Toast.LENGTH_SHORT);
+        toast = Toast.makeText(getApplication(), message, Toast.LENGTH_SHORT);
         View view = toast.getView();
 
-        view.getBackground().setColorFilter(ContextCompat.getColor(context, R.color.teal_200), PorterDuff.Mode.SRC_IN);
+        view.getBackground().setColorFilter(ContextCompat.getColor(getApplication(), R.color.teal_200), PorterDuff.Mode.SRC_IN);
 
         toast.show();
     }
 
-    private void failureToast(String message, Context context) {
+    private void failureToast(String message) {
 
         if (toast != null)
             toast.cancel();
 
-        toast = Toast.makeText(context, message, Toast.LENGTH_SHORT);
+        toast = Toast.makeText(getApplication(), message, Toast.LENGTH_SHORT);
         View view = toast.getView();
 
-        view.getBackground().setColorFilter(ContextCompat.getColor(context, R.color.red), PorterDuff.Mode.SRC_IN);
+        view.getBackground().setColorFilter(ContextCompat.getColor(getApplication(), R.color.red), PorterDuff.Mode.SRC_IN);
 
         toast.show();
     }
 
+
+    @Override
+    protected void onCleared() {
+        super.onCleared();
+        compositeDisposable.dispose();
+    }
 }

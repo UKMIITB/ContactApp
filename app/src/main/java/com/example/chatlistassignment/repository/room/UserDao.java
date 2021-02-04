@@ -12,6 +12,7 @@ import com.example.chatlistassignment.model.User;
 import java.util.List;
 
 import io.reactivex.Completable;
+import io.reactivex.Single;
 
 @Dao
 public interface UserDao {
@@ -21,8 +22,8 @@ public interface UserDao {
     @Delete
     Completable deleteUser(User user);
 
-    @Query("select * from userdb")
-    LiveData<List<User>> getAllUser();
+    @Query("select * from userdb WHERE _id >= :id LIMIT :size")
+    Single<List<User>> getAllUser(int id, int size);
 
     @Update
     Completable updateUser(User user);

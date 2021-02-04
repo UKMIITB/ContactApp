@@ -56,7 +56,7 @@ public class MainActivity extends AppCompatActivity {
             public boolean onQueryTextSubmit(String query) {
                 searchView.clearFocus();
 
-                FragmentViewModel.setQueryString(query);
+//                FragmentViewModel.setQueryString(query);
                 Log.d("TAG", "Inside onQueryTextSubmit: " + query);
                 return false;
             }
@@ -64,7 +64,7 @@ public class MainActivity extends AppCompatActivity {
             @Override
             public boolean onQueryTextChange(String newText) {
 
-                FragmentViewModel.setQueryString(newText);
+//                FragmentViewModel.setQueryString(newText);
                 Log.d("TAG", "Inside onQueryTextChange: " + newText);
                 return false;
             }

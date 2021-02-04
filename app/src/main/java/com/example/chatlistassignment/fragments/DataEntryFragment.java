@@ -26,6 +26,7 @@ import androidx.appcompat.app.AlertDialog;
 import androidx.core.content.ContextCompat;
 import androidx.fragment.app.Fragment;
 import androidx.lifecycle.ViewModelProvider;
+import androidx.lifecycle.ViewModelProviders;
 import androidx.viewpager.widget.ViewPager;
 
 import com.example.chatlistassignment.R;
@@ -53,7 +54,7 @@ public class DataEntryFragment extends Fragment implements View.OnClickListener 
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        fragmentViewModel = new ViewModelProvider(this).get(FragmentViewModel.class);
+        fragmentViewModel = ViewModelProviders.of(this).get(FragmentViewModel.class);
     }
 
     @Override
@@ -62,6 +63,7 @@ public class DataEntryFragment extends Fragment implements View.OnClickListener 
 
         View view = inflater.inflate(R.layout.fragment_data_entry, container, false);
         init(view);
+        fragmentViewModel.init();
         return view;
     }
 

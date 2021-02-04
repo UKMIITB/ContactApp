@@ -96,7 +96,7 @@ public class EditUserInfoActivity extends AppCompatActivity implements View.OnCl
         String birthDate = birthDateString.substring(indexOfColon + 1);
 
         User userUpdated = new User(userName, contactNumber, null, birthDate);
-        fragmentViewModel.updateUser(userUpdated, this);
+        fragmentViewModel.updateUser(userUpdated);
 
         onBackPressed();
     }

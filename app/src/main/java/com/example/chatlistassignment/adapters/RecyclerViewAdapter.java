@@ -21,11 +21,6 @@ import com.example.chatlistassignment.model.User;
 public class RecyclerViewAdapter extends PagedListAdapter<User, RecyclerViewAdapter.ViewHolder> {
     ItemClickListener itemClickListener;
 
-//    public RecyclerViewAdapter(Context context, ArrayList<User> userArrayList, ItemClickListener itemClickListener) {
-//        this.context = context;
-//        this.userArrayList = userArrayList;
-//        this.itemClickListener = itemClickListener;
-//    }
 
     public static DiffUtil.ItemCallback<User> DIFF_CALLBACK = new DiffUtil.ItemCallback<User>() {
         @Override
@@ -64,24 +59,8 @@ public class RecyclerViewAdapter extends PagedListAdapter<User, RecyclerViewAdap
                 .load(Uri.parse(user.getProfilePic()))
                 .error(R.drawable.ic_baseline_person_24)
                 .into(holder.imageViewProfilePic);
-
-
-//        if (user.getProfilePic() == null)
-//            holder.imageViewProfilePic.setImageResource(R.drawable.ic_baseline_person_24);
-//        else
-//            holder.imageViewProfilePic.setImageURI(Uri.parse(user.getProfilePic()));
     }
 
-
-//    @Override
-//    public int getItemCount() {
-//        return userArrayList == null ? 0 : userArrayList.size();
-//    }
-//
-//    public void updateData(ArrayList<User> userArrayList) {
-//        this.userArrayList = userArrayList;
-//        notifyDataSetChanged();
-//    }
 
     class ViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener {
 

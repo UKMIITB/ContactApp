@@ -33,10 +33,6 @@ public class DetailedUserInfoActivity extends AppCompatActivity {
                 .error(R.drawable.ic_baseline_person_24)
                 .into(imageViewProfilePic);
 
-//        if (user.getProfilePic() == null)
-//            imageViewProfilePic.setImageResource(R.drawable.ic_baseline_person_24);
-//        else
-//            imageViewProfilePic.setImageURI(Uri.parse(user.getProfilePic()));
 
         String nameBuilder = "Name: " + user.getName();
         String numberBuilder = "Contact No: " + user.getContactNumber();

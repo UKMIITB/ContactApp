@@ -1,10 +1,12 @@
-package com.example.chatlistassignment.repository.room;
+package com.example.chatlistassignment.repository;
 
 import android.content.Context;
 
 import androidx.paging.DataSource;
 
 import com.example.chatlistassignment.model.User;
+import com.example.chatlistassignment.repository.room.UserDao;
+import com.example.chatlistassignment.repository.room.UserDatabase;
 
 import io.reactivex.Completable;
 

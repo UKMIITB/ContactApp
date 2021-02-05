@@ -82,16 +82,6 @@ public class ChatListFragment extends Fragment implements ItemClickListener {
                 recyclerViewAdapter.submitList(users);
             }
         });
-
-
-//        fragmentViewModel.queryAllUser(getContext(), query).observe(this, new Observer<List<User>>() {
-//            @Override
-//            public void onChanged(List<User> users) {
-//                queryArrayList.clear();
-//                queryArrayList = (ArrayList<User>) users;
-//                recyclerViewAdapter.submitList(queryArrayList);
-//            }
-//        });
     }
 
     private void observeForDbChanges() {

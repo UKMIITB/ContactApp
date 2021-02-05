@@ -16,7 +16,7 @@ import androidx.paging.PagedList;
 
 import com.example.chatlistassignment.R;
 import com.example.chatlistassignment.model.User;
-import com.example.chatlistassignment.repository.room.LocalRepository;
+import com.example.chatlistassignment.repository.LocalRepository;
 
 import io.reactivex.CompletableObserver;
 import io.reactivex.android.schedulers.AndroidSchedulers;
@@ -91,16 +91,6 @@ public class FragmentViewModel extends AndroidViewModel {
                     }
                 });
     }
-
-//    public LiveData<List<User>> getAllUser(Context context) {
-//        erDatabase.getInstance(context);
-//        return repository.getAllUser();
-//    }
-
-//    public Single<List<User>> queryAllUser(String query) {
-//
-//        return repository.queryAllUser(query);
-//    }
 
     public void deleteUser(User user) {
 

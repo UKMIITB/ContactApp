@@ -17,13 +17,8 @@ import androidx.paging.PagedList;
 import com.example.chatlistassignment.R;
 import com.example.chatlistassignment.model.User;
 import com.example.chatlistassignment.repository.room.LocalRepository;
-import com.example.chatlistassignment.repository.room.datasource.QueriedUserDataSourceFactory;
-import com.example.chatlistassignment.repository.room.datasource.UserDataSourceFactory;
-
-import java.util.List;
 
 import io.reactivex.CompletableObserver;
-import io.reactivex.Single;
 import io.reactivex.android.schedulers.AndroidSchedulers;
 import io.reactivex.disposables.CompositeDisposable;
 import io.reactivex.disposables.Disposable;
@@ -33,14 +28,10 @@ import io.reactivex.schedulers.Schedulers;
 public class FragmentViewModel extends AndroidViewModel {
 
     public LiveData<PagedList<User>> userList;
-    private UserDataSourceFactory factory;
     private LocalRepository repository;
     private CompositeDisposable compositeDisposable = new CompositeDisposable();
 
-    private QueriedUserDataSourceFactory queriedUserDataSourceFactory;
     public LiveData<PagedList<User>> queriedUserList;
-    private LocalRepository queryRepository;
-    private CompositeDisposable queryCompositeDisposable = new CompositeDisposable();
 
     public FragmentViewModel(@NonNull Application application) {
         super(application);
@@ -56,12 +47,12 @@ public class FragmentViewModel extends AndroidViewModel {
     }
 
     public void queryInit(String query) {
-        queryRepository = new LocalRepository(getApplication());
-        queriedUserDataSourceFactory = new QueriedUserDataSourceFactory(getApplication(), queryCompositeDisposable, query);
+        repository = new LocalRepository(getApplication());
+
         PagedList.Config config = (new PagedList.Config.Builder()).setEnablePlaceholders(false)
                 .setInitialLoadSizeHint(10)
                 .setPageSize(10).build();
-        queriedUserList = new LivePagedListBuilder<>(queriedUserDataSourceFactory, config).build();
+        queriedUserList = new LivePagedListBuilder<>(repository.queryAllUser(query), config).build();
     }
 
     private Toast toast;
@@ -106,10 +97,10 @@ public class FragmentViewModel extends AndroidViewModel {
 //        return repository.getAllUser();
 //    }
 
-    public Single<List<User>> queryAllUser(String query) {
-
-        return repository.queryAllUser(query);
-    }
+//    public Single<List<User>> queryAllUser(String query) {
+//
+//        return repository.queryAllUser(query);
+//    }
 
     public void deleteUser(User user) {
 

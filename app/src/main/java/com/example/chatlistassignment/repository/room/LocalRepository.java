@@ -2,15 +2,11 @@ package com.example.chatlistassignment.repository.room;
 
 import android.content.Context;
 
-import androidx.lifecycle.LiveData;
 import androidx.paging.DataSource;
 
 import com.example.chatlistassignment.model.User;
 
-import java.util.List;
-
 import io.reactivex.Completable;
-import io.reactivex.Single;
 
 public class LocalRepository {
 
@@ -34,11 +30,11 @@ public class LocalRepository {
     }
 
 
-    public DataSource.Factory<Integer,User> getAllUser() {
+    public DataSource.Factory<Integer, User> getAllUser() {
         return userDao.getAllUser();
     }
 
-    public Single<List<User>> queryAllUser(String query) {
+    public DataSource.Factory<Integer, User> queryAllUser(String query) {
         return userDao.queryAllUser(query);
     }
 

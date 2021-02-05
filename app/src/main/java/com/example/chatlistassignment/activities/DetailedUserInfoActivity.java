@@ -7,6 +7,7 @@ import android.widget.TextView;
 
 import androidx.appcompat.app.AppCompatActivity;
 
+import com.bumptech.glide.Glide;
 import com.example.chatlistassignment.R;
 import com.example.chatlistassignment.model.User;
 
@@ -27,10 +28,15 @@ public class DetailedUserInfoActivity extends AppCompatActivity {
 
     private void setData(User user) {
 
-        if (user.getProfilePic() == null)
-            imageViewProfilePic.setImageResource(R.drawable.ic_baseline_person_24);
-        else
-            imageViewProfilePic.setImageURI(Uri.parse(user.getProfilePic()));
+        Glide.with(this)
+                .load(Uri.parse(user.getProfilePic()))
+                .error(R.drawable.ic_baseline_person_24)
+                .into(imageViewProfilePic);
+
+//        if (user.getProfilePic() == null)
+//            imageViewProfilePic.setImageResource(R.drawable.ic_baseline_person_24);
+//        else
+//            imageViewProfilePic.setImageURI(Uri.parse(user.getProfilePic()));
 
         String nameBuilder = "Name: " + user.getName();
         String numberBuilder = "Contact No: " + user.getContactNumber();

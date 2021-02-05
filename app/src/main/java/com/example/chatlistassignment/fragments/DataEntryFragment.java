@@ -28,6 +28,7 @@ import androidx.fragment.app.Fragment;
 import androidx.lifecycle.ViewModelProviders;
 import androidx.viewpager.widget.ViewPager;
 
+import com.bumptech.glide.Glide;
 import com.example.chatlistassignment.R;
 import com.example.chatlistassignment.model.User;
 import com.example.chatlistassignment.utils.SaveBitmap;
@@ -191,15 +192,15 @@ public class DataEntryFragment extends Fragment implements View.OnClickListener 
                     try {
                         Log.d("TAG", "Inside try of onActivity result of DataEntryFragment");
                         cameraImageUri = SaveBitmap.saveBitmapReturnUri(bitmapCameraImage);
-                        Log.d("TAG", "cmeraUri: " + cameraImageUri.toString());
+                        Log.d("TAG", "cameraUri: " + cameraImageUri.toString());
                         Log.d("TAG", "cameraUri: " + cameraImageUri.getPath());
 
                     } catch (IOException e) {
                         Log.d("TAG", "Inside catch: " + e.getMessage());
                         e.printStackTrace();
                     }
-                    imageViewProfilePic.setImageURI(cameraImageUri);
-
+//                    imageViewProfilePic.setImageURI(cameraImageUri);
+                    updateProfilePic(cameraImageUri);
                     ProfilePicPath = cameraImageUri.toString();
                     break;
 
@@ -208,10 +209,19 @@ public class DataEntryFragment extends Fragment implements View.OnClickListener 
                     Log.d("TAG", "URi: " + selectedImageUri.getPath());
                     ProfilePicPath = selectedImageUri.toString();
 
-                    imageViewProfilePic.setImageURI(selectedImageUri);
+                    updateProfilePic(selectedImageUri);
+//                    imageViewProfilePic.setImageURI(selectedImageUri);
                     break;
             }
         }
+    }
+
+
+    public void updateProfilePic(Uri picUri) {
+        Glide.with(getContext())
+                .load(picUri)
+                .error(R.drawable.ic_baseline_person_24)
+                .into(imageViewProfilePic);
     }
 
 

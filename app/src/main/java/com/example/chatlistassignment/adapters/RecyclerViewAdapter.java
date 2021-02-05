@@ -13,6 +13,7 @@ import androidx.paging.PagedListAdapter;
 import androidx.recyclerview.widget.DiffUtil;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.bumptech.glide.Glide;
 import com.example.chatlistassignment.ItemClickListener;
 import com.example.chatlistassignment.R;
 import com.example.chatlistassignment.model.User;
@@ -59,10 +60,16 @@ public class RecyclerViewAdapter extends PagedListAdapter<User, RecyclerViewAdap
         holder.textViewName.setText(user.getName());
         holder.textViewNumber.setText(user.getContactNumber());
 
-        if (user.getProfilePic() == null)
-            holder.imageViewProfilePic.setImageResource(R.drawable.ic_baseline_person_24);
-        else
-            holder.imageViewProfilePic.setImageURI(Uri.parse(user.getProfilePic()));
+        Glide.with(holder.imageViewProfilePic.getContext())
+                .load(Uri.parse(user.getProfilePic()))
+                .error(R.drawable.ic_baseline_person_24)
+                .into(holder.imageViewProfilePic);
+
+
+//        if (user.getProfilePic() == null)
+//            holder.imageViewProfilePic.setImageResource(R.drawable.ic_baseline_person_24);
+//        else
+//            holder.imageViewProfilePic.setImageURI(Uri.parse(user.getProfilePic()));
     }
 
 

@@ -25,12 +25,12 @@ public class QueriedUserDataSource extends ItemKeyedDataSource<Integer, User> {
 
     @Override
     public void loadInitial(@NonNull LoadInitialParams<Integer> params, @NonNull LoadInitialCallback<User> callback) {
-        compositeDisposable.add(repository.queryAllUser(query).subscribe(users -> {
-            Log.d("TAG", "loadInitial QueriedUserDataSource:  userList Size  " + users.size());
-            callback.onResult(users);
-        }, throwable -> {
-            Log.e("TAG", "loadInitial QueriedUserDataSource:  error in data source");
-        }));
+//        compositeDisposable.add(repository.queryAllUser(query).subscribe(users -> {
+//            Log.d("TAG", "loadInitial QueriedUserDataSource:  userList Size  " + users.size());
+//            callback.onResult(users);
+//        }, throwable -> {
+//            Log.e("TAG", "loadInitial QueriedUserDataSource:  error in data source");
+//        }));
     }
 
     @Override

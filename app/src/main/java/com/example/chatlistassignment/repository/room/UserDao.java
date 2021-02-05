@@ -9,6 +9,8 @@ import androidx.room.Update;
 
 import com.example.chatlistassignment.model.User;
 
+import java.util.List;
+
 import io.reactivex.Completable;
 
 @Dao
@@ -27,4 +29,10 @@ public interface UserDao {
 
     @Query("select * from userdb where name like :query or contactNumber like :query")
     DataSource.Factory<Integer, User> queryAllUser(String query);
+
+//    @Query("delete from userdb where _id in (:userArrayList)")
+//    Completable deleteListOfUsers(List<Integer> userArrayList);
+
+    @Delete
+    Completable deleteListOfUsers(List<User> userArrayList);
 }

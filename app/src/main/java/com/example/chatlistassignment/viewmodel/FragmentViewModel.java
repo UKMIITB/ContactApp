@@ -18,6 +18,8 @@ import com.example.chatlistassignment.R;
 import com.example.chatlistassignment.model.User;
 import com.example.chatlistassignment.repository.LocalRepository;
 
+import java.util.List;
+
 import io.reactivex.CompletableObserver;
 import io.reactivex.android.schedulers.AndroidSchedulers;
 import io.reactivex.disposables.CompositeDisposable;
@@ -57,7 +59,7 @@ public class FragmentViewModel extends AndroidViewModel {
 
     private Toast toast;
 
-    public static MutableLiveData<String> queryString = new MutableLiveData<>();
+    private static MutableLiveData<String> queryString = new MutableLiveData<>();
 
     public static void setQueryString(String query) {
         queryString.setValue(query);
@@ -66,6 +68,17 @@ public class FragmentViewModel extends AndroidViewModel {
     public LiveData<String> getQueryString() {
         return queryString;
     }
+
+    private static MutableLiveData<Boolean> isMultiSelectOn = new MutableLiveData<>();
+
+    public void setIsMultiSelect(boolean isMultiSelect) {
+        isMultiSelectOn.setValue(isMultiSelect);
+    }
+
+    public static LiveData<Boolean> getIsMultiSelectOn() {
+        return isMultiSelectOn;
+    }
+
 
     public void addUser(User user) {
 
@@ -137,6 +150,31 @@ public class FragmentViewModel extends AndroidViewModel {
                     public void onError(@NonNull Throwable e) {
                         Log.d("TAG", "Inside onError of updateUser in ViewModel");
                         failureToast(e.getMessage());
+                    }
+                });
+    }
+
+
+    public void deleteListOfUsers(List<User> userArrayList) {
+        Log.e("TAG", "deleteListOfUsers: ---> "+userArrayList.size());
+        repository.deleteListOfUsers(userArrayList)
+                .subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe(new CompletableObserver() {
+                    @Override
+                    public void onSubscribe(@io.reactivex.annotations.NonNull Disposable d) {
+                        Log.d("TAG", "Inside onSubscribe of deleteListOfUsers in ViewModel");
+                    }
+
+                    @Override
+                    public void onComplete() {
+                        Log.d("TAG", "Inside onComplete of deleteListOfUsers in ViewModel");
+                        successToast("User Data deleted successfully");
+                    }
+
+                    @Override
+                    public void onError(@io.reactivex.annotations.NonNull Throwable e) {
+                        Log.d("TAG", "Inside onError of deleteListOfUsers in ViewModel");
                     }
                 });
     }

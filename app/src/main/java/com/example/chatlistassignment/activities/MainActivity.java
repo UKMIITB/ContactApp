@@ -9,6 +9,7 @@ import android.widget.SearchView;
 
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.view.MenuItemCompat;
+import androidx.lifecycle.Observer;
 import androidx.viewpager.widget.ViewPager;
 
 import com.example.chatlistassignment.R;
@@ -46,6 +47,9 @@ public class MainActivity extends AppCompatActivity {
     public boolean onCreateOptionsMenu(Menu menu) {
 
         MenuInflater inflater = getMenuInflater();
+
+        setMenu(inflater, menu);
+
         inflater.inflate(R.menu.menu, menu);
         MenuItem searchViewItem = menu.findItem(R.id.app_bar_search);
         final SearchView searchView = (SearchView) MenuItemCompat.getActionView(searchViewItem);
@@ -70,5 +74,18 @@ public class MainActivity extends AppCompatActivity {
         });
 
         return super.onCreateOptionsMenu(menu);
+    }
+
+    private void setMenu(MenuInflater inflater, Menu menu) {
+        FragmentViewModel.getIsMultiSelectOn().observe(this, new Observer<Boolean>() {
+            @Override
+            public void onChanged(Boolean aBoolean) {
+                menu.clear();
+                if (aBoolean)
+                    inflater.inflate(R.menu.multi_select_menu, menu);
+                else
+                    inflater.inflate(R.menu.menu, menu);
+            }
+        });
     }
 }

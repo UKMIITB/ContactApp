@@ -8,6 +8,8 @@ import com.example.chatlistassignment.model.User;
 import com.example.chatlistassignment.repository.room.UserDao;
 import com.example.chatlistassignment.repository.room.UserDatabase;
 
+import java.util.List;
+
 import io.reactivex.Completable;
 
 public class LocalRepository {
@@ -38,6 +40,10 @@ public class LocalRepository {
 
     public DataSource.Factory<Integer, User> queryAllUser(String query) {
         return userDao.queryAllUser(query);
+    }
+
+    public Completable deleteListOfUsers(List<User> userArrayList) {
+        return userDao.deleteListOfUsers(userArrayList);
     }
 
 

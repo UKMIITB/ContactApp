@@ -10,7 +10,7 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.appcompat.app.AppCompatActivity;
-import androidx.lifecycle.ViewModelProvider;
+import androidx.lifecycle.ViewModelProviders;
 
 import com.example.chatlistassignment.R;
 import com.example.chatlistassignment.model.User;
@@ -33,7 +33,7 @@ public class EditUserInfoActivity extends AppCompatActivity implements View.OnCl
 
         User user = (User) getIntent().getSerializableExtra("User");
 
-        fragmentViewModel = new ViewModelProvider(this).get(FragmentViewModel.class);
+        fragmentViewModel = ViewModelProviders.of(this).get(FragmentViewModel.class);
 
         init(user);
     }

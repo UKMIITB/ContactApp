@@ -199,7 +199,7 @@ public class DataEntryFragment extends Fragment implements View.OnClickListener 
                         Log.d("TAG", "Inside catch: " + e.getMessage());
                         e.printStackTrace();
                     }
-//                    imageViewProfilePic.setImageURI(cameraImageUri);
+
                     updateProfilePic(cameraImageUri);
                     ProfilePicPath = cameraImageUri.toString();
                     break;
@@ -210,7 +210,6 @@ public class DataEntryFragment extends Fragment implements View.OnClickListener 
                     ProfilePicPath = selectedImageUri.toString();
 
                     updateProfilePic(selectedImageUri);
-//                    imageViewProfilePic.setImageURI(selectedImageUri);
                     break;
             }
         }

@@ -1,10 +1,10 @@
 package com.example.chatlistassignment.adapters;
 
 import android.net.Uri;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.TextView;
 
@@ -34,13 +34,14 @@ public class RecyclerViewAdapter extends PagedListAdapter<User, RecyclerViewAdap
         }
     };
 
-    public RecyclerViewAdapter() {
+    public RecyclerViewAdapter(ItemClickListener itemClickListener) {
         super(DIFF_CALLBACK);
-    }
-
-    public void setItemClickListener(ItemClickListener itemClickListener) {
         this.itemClickListener = itemClickListener;
     }
+
+//    public void setItemClickListener(ItemClickListener itemClickListener) {
+//        this.itemClickListener = itemClickListener;
+//    }
 
     @NonNull
     @Override
@@ -55,18 +56,21 @@ public class RecyclerViewAdapter extends PagedListAdapter<User, RecyclerViewAdap
         holder.textViewName.setText(user.getName());
         holder.textViewNumber.setText(user.getContactNumber());
 
-        Glide.with(holder.imageViewProfilePic.getContext())
-                .load(Uri.parse(user.getProfilePic()))
-                .error(R.drawable.ic_baseline_person_24)
-                .into(holder.imageViewProfilePic);
+        if(user.getProfilePic() != null){
+            Glide.with(holder.imageViewProfilePic.getContext())
+                    .load(Uri.parse(user.getProfilePic()))
+                    .error(R.drawable.ic_baseline_person_24)
+                    .into(holder.imageViewProfilePic);
+        }
+
     }
 
 
-    class ViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener {
+    class ViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener, View.OnLongClickListener {
 
         ImageView imageViewProfilePic;
         TextView textViewName, textViewNumber;
-        Button buttonEdit, buttonDelete;
+//        Button buttonEdit, buttonDelete;
 
         public ViewHolder(@NonNull View itemView) {
             super(itemView);
@@ -75,19 +79,31 @@ public class RecyclerViewAdapter extends PagedListAdapter<User, RecyclerViewAdap
             textViewName = itemView.findViewById(R.id.text_view_name);
             textViewNumber = itemView.findViewById(R.id.text_view_number);
 
-            buttonEdit = itemView.findViewById(R.id.button_edit);
-            buttonDelete = itemView.findViewById(R.id.button_delete);
+//            buttonEdit = itemView.findViewById(R.id.button_edit);
+//            buttonDelete = itemView.findViewById(R.id.button_delete);
 
             itemView.setOnClickListener(this);
 
-            buttonEdit.setOnClickListener(this);
-            buttonDelete.setOnClickListener(this);
+            itemView.setOnLongClickListener(this);
+
+//            buttonEdit.setOnClickListener(this);
+//            buttonDelete.setOnClickListener(this);
         }
 
         @Override
         public void onClick(View view) {
+            Log.d("TAG", "onClick in adapter called: " + view.getId());
             if (itemClickListener != null)
                 itemClickListener.onItemClicked(view, getItem(getAdapterPosition()));
+        }
+
+        @Override
+        public boolean onLongClick(View view) {
+            Log.d("TAG", "onLongClick boolean called: " + view.getId());
+            if (itemClickListener != null)
+                itemClickListener.onItemLongClicked(view, getItem(getAdapterPosition()), getAdapterPosition());
+
+            return true;
         }
     }
 }

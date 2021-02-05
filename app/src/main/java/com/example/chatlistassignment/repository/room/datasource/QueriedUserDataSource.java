@@ -11,25 +11,26 @@ import com.example.chatlistassignment.repository.room.LocalRepository;
 
 import io.reactivex.disposables.CompositeDisposable;
 
-public class UserDataSource extends ItemKeyedDataSource<Integer, User> {
+public class QueriedUserDataSource extends ItemKeyedDataSource<Integer, User> {
 
     private LocalRepository repository;
     private CompositeDisposable compositeDisposable;
+    private String query;
 
-    public UserDataSource(Context ctx, CompositeDisposable compositeDisposable) {
+    public QueriedUserDataSource(Context ctx, CompositeDisposable compositeDisposable, String query) {
         repository = new LocalRepository(ctx);
         this.compositeDisposable = compositeDisposable;
+        this.query = query;
     }
-
 
     @Override
     public void loadInitial(@NonNull LoadInitialParams<Integer> params, @NonNull LoadInitialCallback<User> callback) {
-//        compositeDisposable.add(repository.getAllUser(1, params.requestedLoadSize).subscribe(users -> {
-//            Log.d("TAG", "loadInitial:  userList Size  " + users.size());
-//            callback.onResult(users);
-//        }, throwable -> {
-//            Log.e("TAG", "loadInitial:  error in data source");
-//        }));
+        compositeDisposable.add(repository.queryAllUser(query).subscribe(users -> {
+            Log.d("TAG", "loadInitial QueriedUserDataSource:  userList Size  " + users.size());
+            callback.onResult(users);
+        }, throwable -> {
+            Log.e("TAG", "loadInitial QueriedUserDataSource:  error in data source");
+        }));
     }
 
     @Override

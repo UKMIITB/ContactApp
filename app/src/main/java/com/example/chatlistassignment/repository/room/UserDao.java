@@ -1,6 +1,6 @@
 package com.example.chatlistassignment.repository.room;
 
-import androidx.lifecycle.LiveData;
+import androidx.paging.DataSource;
 import androidx.room.Dao;
 import androidx.room.Delete;
 import androidx.room.Insert;
@@ -22,12 +22,12 @@ public interface UserDao {
     @Delete
     Completable deleteUser(User user);
 
-    @Query("select * from userdb WHERE _id >= :id LIMIT :size")
-    Single<List<User>> getAllUser(int id, int size);
+    @Query("select * from userdb")
+    DataSource.Factory<Integer,User> getAllUser();
 
     @Update
     Completable updateUser(User user);
 
     @Query("select * from userdb where name like :query or contactNumber like :query")
-    LiveData<List<User>> queryAllUser(String query);
+    Single<List<User>> queryAllUser(String query);
 }

@@ -25,7 +25,6 @@ import androidx.annotation.Nullable;
 import androidx.appcompat.app.AlertDialog;
 import androidx.core.content.ContextCompat;
 import androidx.fragment.app.Fragment;
-import androidx.lifecycle.ViewModelProvider;
 import androidx.lifecycle.ViewModelProviders;
 import androidx.viewpager.widget.ViewPager;
 
@@ -231,7 +230,7 @@ public class DataEntryFragment extends Fragment implements View.OnClickListener 
 
         User user = new User(userName, contactNumber, ProfilePicPath, birthDate);
 
-        fragmentViewModel.addUser(user, getContext());
+        fragmentViewModel.addUser(user);
 
         clearInputFields();
 

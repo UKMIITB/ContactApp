@@ -1,7 +1,6 @@
 package com.example.chatlistassignment.viewmodel;
 
 import android.app.Application;
-import android.content.Context;
 import android.graphics.PorterDuff;
 import android.util.Log;
 import android.view.View;
@@ -12,19 +11,19 @@ import androidx.core.content.ContextCompat;
 import androidx.lifecycle.AndroidViewModel;
 import androidx.lifecycle.LiveData;
 import androidx.lifecycle.MutableLiveData;
-import androidx.lifecycle.ViewModel;
 import androidx.paging.LivePagedListBuilder;
 import androidx.paging.PagedList;
 
 import com.example.chatlistassignment.R;
 import com.example.chatlistassignment.model.User;
 import com.example.chatlistassignment.repository.room.LocalRepository;
-import com.example.chatlistassignment.repository.room.UserDatabase;
+import com.example.chatlistassignment.repository.room.datasource.QueriedUserDataSourceFactory;
 import com.example.chatlistassignment.repository.room.datasource.UserDataSourceFactory;
 
 import java.util.List;
 
 import io.reactivex.CompletableObserver;
+import io.reactivex.Single;
 import io.reactivex.android.schedulers.AndroidSchedulers;
 import io.reactivex.disposables.CompositeDisposable;
 import io.reactivex.disposables.Disposable;
@@ -33,29 +32,43 @@ import io.reactivex.schedulers.Schedulers;
 
 public class FragmentViewModel extends AndroidViewModel {
 
-    public  LiveData<PagedList<User>> userList;
+    public LiveData<PagedList<User>> userList;
     private UserDataSourceFactory factory;
     private LocalRepository repository;
     private CompositeDisposable compositeDisposable = new CompositeDisposable();
+
+    private QueriedUserDataSourceFactory queriedUserDataSourceFactory;
+    public LiveData<PagedList<User>> queriedUserList;
+    private LocalRepository queryRepository;
+    private CompositeDisposable queryCompositeDisposable = new CompositeDisposable();
 
     public FragmentViewModel(@NonNull Application application) {
         super(application);
     }
 
-    public void init(){
+    public void init() {
         repository = new LocalRepository(getApplication());
-        factory = new UserDataSourceFactory(getApplication(),compositeDisposable);
-        PagedList.Config  config = (new PagedList.Config.Builder()).setEnablePlaceholders(false)
+
+        PagedList.Config config = (new PagedList.Config.Builder()).setEnablePlaceholders(false)
                 .setInitialLoadSizeHint(10)
                 .setPageSize(10).build();
-        userList = new LivePagedListBuilder<>(factory,config).build();
+        userList = new LivePagedListBuilder<>(repository.getAllUser(), config).build();
+    }
+
+    public void queryInit(String query) {
+        queryRepository = new LocalRepository(getApplication());
+        queriedUserDataSourceFactory = new QueriedUserDataSourceFactory(getApplication(), queryCompositeDisposable, query);
+        PagedList.Config config = (new PagedList.Config.Builder()).setEnablePlaceholders(false)
+                .setInitialLoadSizeHint(10)
+                .setPageSize(10).build();
+        queriedUserList = new LivePagedListBuilder<>(queriedUserDataSourceFactory, config).build();
     }
 
     private Toast toast;
 
     public static MutableLiveData<String> queryString = new MutableLiveData<>();
 
-    public  void setQueryString(String query) {
+    public static void setQueryString(String query) {
         queryString.setValue(query);
     }
 
@@ -63,7 +76,7 @@ public class FragmentViewModel extends AndroidViewModel {
         return queryString;
     }
 
-    public void addUser(User user, Context context) {
+    public void addUser(User user) {
 
         repository.addUser(user)
                 .subscribeOn(Schedulers.io())
@@ -93,14 +106,14 @@ public class FragmentViewModel extends AndroidViewModel {
 //        return repository.getAllUser();
 //    }
 
-    public LiveData<List<User>> queryAllUser(Context context, String query) {
+    public Single<List<User>> queryAllUser(String query) {
 
         return repository.queryAllUser(query);
     }
 
     public void deleteUser(User user) {
 
-       repository.deleteUser(user)
+        repository.deleteUser(user)
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(new CompletableObserver() {

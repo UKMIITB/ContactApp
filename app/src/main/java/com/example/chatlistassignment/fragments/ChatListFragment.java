@@ -10,7 +10,6 @@ import android.view.ViewGroup;
 import androidx.annotation.NonNull;
 import androidx.fragment.app.Fragment;
 import androidx.lifecycle.Observer;
-import androidx.lifecycle.ViewModelProvider;
 import androidx.lifecycle.ViewModelProviders;
 import androidx.paging.PagedList;
 import androidx.recyclerview.widget.ItemTouchHelper;
@@ -26,7 +25,6 @@ import com.example.chatlistassignment.model.User;
 import com.example.chatlistassignment.viewmodel.FragmentViewModel;
 
 import java.util.ArrayList;
-import java.util.List;
 
 
 public class ChatListFragment extends Fragment implements ItemClickListener {
@@ -61,7 +59,7 @@ public class ChatListFragment extends Fragment implements ItemClickListener {
     }
 
     private void observeQueryString() {
-        if(fragmentViewModel != null){
+        if (fragmentViewModel != null) {
             fragmentViewModel.getQueryString().observe(this, new Observer<String>() {
                 @Override
                 public void onChanged(String query) {
@@ -75,6 +73,16 @@ public class ChatListFragment extends Fragment implements ItemClickListener {
 
     private void queryChatList(String query) {
         query = "%" + query + "%";
+
+        fragmentViewModel.queryInit(query);
+
+        fragmentViewModel.queriedUserList.observe(this, new Observer<PagedList<User>>() {
+            @Override
+            public void onChanged(PagedList<User> users) {
+                recyclerViewAdapter.submitList(users);
+            }
+        });
+
 
 //        fragmentViewModel.queryAllUser(getContext(), query).observe(this, new Observer<List<User>>() {
 //            @Override
@@ -116,7 +124,7 @@ public class ChatListFragment extends Fragment implements ItemClickListener {
                 break;
             case R.id.button_edit:
                 Intent intentEditUserInfoActivity = new Intent(getContext(), EditUserInfoActivity.class);
-                intentEditUserInfoActivity.putExtra("User",user);
+                intentEditUserInfoActivity.putExtra("User", user);
                 startActivity(intentEditUserInfoActivity);
                 break;
             default:
@@ -136,7 +144,7 @@ public class ChatListFragment extends Fragment implements ItemClickListener {
 
         @Override
         public void onSwiped(@NonNull RecyclerView.ViewHolder viewHolder, int direction) {
-           // fragmentViewModel.deleteUser(userArrayList.get(viewHolder.getAdapterPosition()));
+            // fragmentViewModel.deleteUser(userArrayList.get(viewHolder.getAdapterPosition()));
         }
     };
 }

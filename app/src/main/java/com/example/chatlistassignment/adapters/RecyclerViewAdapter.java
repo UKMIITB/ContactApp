@@ -1,6 +1,5 @@
 package com.example.chatlistassignment.adapters;
 
-import android.content.Context;
 import android.net.Uri;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -18,9 +17,7 @@ import com.example.chatlistassignment.ItemClickListener;
 import com.example.chatlistassignment.R;
 import com.example.chatlistassignment.model.User;
 
-import java.util.ArrayList;
-
-public class RecyclerViewAdapter extends PagedListAdapter<User,RecyclerViewAdapter.ViewHolder> {
+public class RecyclerViewAdapter extends PagedListAdapter<User, RecyclerViewAdapter.ViewHolder> {
     ItemClickListener itemClickListener;
 
 //    public RecyclerViewAdapter(Context context, ArrayList<User> userArrayList, ItemClickListener itemClickListener) {
@@ -29,7 +26,7 @@ public class RecyclerViewAdapter extends PagedListAdapter<User,RecyclerViewAdapt
 //        this.itemClickListener = itemClickListener;
 //    }
 
-    public  static DiffUtil.ItemCallback<User> DIFF_CALLBACK = new DiffUtil.ItemCallback<User>() {
+    public static DiffUtil.ItemCallback<User> DIFF_CALLBACK = new DiffUtil.ItemCallback<User>() {
         @Override
         public boolean areItemsTheSame(@NonNull User oldItem, @NonNull User newItem) {
             return oldItem.get_id() == newItem.get_id();
@@ -45,7 +42,7 @@ public class RecyclerViewAdapter extends PagedListAdapter<User,RecyclerViewAdapt
         super(DIFF_CALLBACK);
     }
 
-    public  void setItemClickListener(ItemClickListener itemClickListener){
+    public void setItemClickListener(ItemClickListener itemClickListener) {
         this.itemClickListener = itemClickListener;
     }
 
@@ -66,8 +63,8 @@ public class RecyclerViewAdapter extends PagedListAdapter<User,RecyclerViewAdapt
             holder.imageViewProfilePic.setImageResource(R.drawable.ic_baseline_person_24);
         else
             holder.imageViewProfilePic.setImageURI(Uri.parse(user.getProfilePic()));
-
     }
+
 
 //    @Override
 //    public int getItemCount() {
@@ -104,7 +101,7 @@ public class RecyclerViewAdapter extends PagedListAdapter<User,RecyclerViewAdapt
         @Override
         public void onClick(View view) {
             if (itemClickListener != null)
-                itemClickListener.onItemClicked(view,getItem(getAdapterPosition()));
+                itemClickListener.onItemClicked(view, getItem(getAdapterPosition()));
         }
     }
 }

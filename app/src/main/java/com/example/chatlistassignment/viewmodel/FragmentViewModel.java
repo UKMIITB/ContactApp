@@ -131,6 +131,7 @@ public class FragmentViewModel extends AndroidViewModel {
     }
 
     public void updateUser(User user) {
+
         repository.updateUser(user)
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
@@ -156,7 +157,7 @@ public class FragmentViewModel extends AndroidViewModel {
 
 
     public void deleteListOfUsers(List<User> userArrayList) {
-        Log.e("TAG", "deleteListOfUsers: ---> "+userArrayList.size());
+        Log.e("TAG", "deleteListOfUsers: ---> " + userArrayList.size());
         repository.deleteListOfUsers(userArrayList)
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())

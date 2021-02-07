@@ -14,6 +14,7 @@ import androidx.fragment.app.Fragment;
 import androidx.lifecycle.Observer;
 import androidx.lifecycle.ViewModelProviders;
 import androidx.paging.PagedList;
+import androidx.recyclerview.widget.ItemTouchHelper;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
@@ -25,6 +26,7 @@ import com.example.chatlistassignment.model.User;
 import com.example.chatlistassignment.viewmodel.FragmentViewModel;
 
 import java.util.ArrayList;
+import java.util.List;
 
 
 public class ChatListFragment extends Fragment implements ItemClickListener {
@@ -38,6 +40,7 @@ public class ChatListFragment extends Fragment implements ItemClickListener {
     boolean multiSelectStatus = false;
 
     ArrayList<User> deleteUserList;
+    List<User> currentUserList;
 
 
     @Override
@@ -45,6 +48,7 @@ public class ChatListFragment extends Fragment implements ItemClickListener {
         super.onCreate(savedInstanceState);
         fragmentViewModel = ViewModelProviders.of(this).get(FragmentViewModel.class);
         deleteUserList = new ArrayList<>();
+        currentUserList = new ArrayList<>();
 
         setHasOptionsMenu(true);
     }
@@ -64,7 +68,7 @@ public class ChatListFragment extends Fragment implements ItemClickListener {
     }
 
     private void observeMultiSelectStatus() {
-        FragmentViewModel.getIsMultiSelectOn().observe(this, new Observer<Boolean>() {
+        FragmentViewModel.getIsMultiSelectOn().observe(getViewLifecycleOwner(), new Observer<Boolean>() {
             @Override
             public void onChanged(Boolean aBoolean) {
                 multiSelectStatus = aBoolean;
@@ -74,7 +78,7 @@ public class ChatListFragment extends Fragment implements ItemClickListener {
 
     private void observeQueryString() {
         if (fragmentViewModel != null) {
-            fragmentViewModel.getQueryString().observe(this, new Observer<String>() {
+            fragmentViewModel.getQueryString().observe(getViewLifecycleOwner(), new Observer<String>() {
                 @Override
                 public void onChanged(String query) {
                     Log.d("TAG", "Inside ChatListFragment: " + query);
@@ -100,9 +104,11 @@ public class ChatListFragment extends Fragment implements ItemClickListener {
 
     private void observeForDbChanges() {
 
-        fragmentViewModel.userList.observe(this, new Observer<PagedList<User>>() {
+        fragmentViewModel.userList.observe(getViewLifecycleOwner(), new Observer<PagedList<User>>() {
             @Override
             public void onChanged(PagedList<User> users) {
+//                currentUserList.clear();
+                currentUserList = users.snapshot();
                 recyclerViewAdapter.submitList(users);
             }
         });
@@ -114,7 +120,7 @@ public class ChatListFragment extends Fragment implements ItemClickListener {
         layoutManager = new LinearLayoutManager(getContext());
         recyclerViewAdapter = new RecyclerViewAdapter(this);
 
-//        new ItemTouchHelper(itemTouchHelperCallback).attachToRecyclerView(recyclerViewChatList);
+        new ItemTouchHelper(itemTouchHelperCallback).attachToRecyclerView(recyclerViewChatList);
         recyclerViewChatList.setLayoutManager(layoutManager);
         recyclerViewChatList.setAdapter(recyclerViewAdapter);
 
@@ -137,24 +143,6 @@ public class ChatListFragment extends Fragment implements ItemClickListener {
             intentEditUserInfoActivity.putExtra("User", user);
             startActivity(intentEditUserInfoActivity);
         }
-
-//        switch (view.getId()) {
-//            case R.id.button_delete:
-//                fragmentViewModel.deleteUser(user);
-//                break;
-//            case R.id.button_edit:
-//                Intent intentEditUserInfoActivity = new Intent(getContext(), EditUserInfoActivity.class);
-//                intentEditUserInfoActivity.putExtra("User", user);
-//                startActivity(intentEditUserInfoActivity);
-//                break;
-//            default:
-
-
-        Log.d("TAG", "Default intent called");
-//        Intent intentDetailedUserInfoActivity = new Intent(getContext(), DetailedUserInfoActivity.class);
-//        intentDetailedUserInfoActivity.putExtra("User", user);
-//        startActivity(intentDetailedUserInfoActivity);
-//                break;
     }
 
 
@@ -171,9 +159,9 @@ public class ChatListFragment extends Fragment implements ItemClickListener {
     @Override
     public boolean onOptionsItemSelected(@NonNull MenuItem item) {
 
-        if (item.getItemId() == R.id.multi_select_delete_menu) {
+        if (item.getItemId() == R.id.multi_select_delete) {
 
-            for (User user :deleteUserList) {
+            for (User user : deleteUserList) {
                 fragmentViewModel.deleteUser(user);
             }
 
@@ -183,17 +171,17 @@ public class ChatListFragment extends Fragment implements ItemClickListener {
         return super.onOptionsItemSelected(item);
     }
 
-    //    ItemTouchHelper.SimpleCallback itemTouchHelperCallback = new ItemTouchHelper.SimpleCallback(0,
-//            ItemTouchHelper.RIGHT | ItemTouchHelper.LEFT) {
-//        @Override
-//        public boolean onMove(@NonNull RecyclerView recyclerView, @NonNull RecyclerView.ViewHolder viewHolder, @NonNull RecyclerView.ViewHolder target) {
-//            return false;
-//        }
-//
-//        @Override
-//        public void onSwiped(@NonNull RecyclerView.ViewHolder viewHolder, int direction) {
-//            // fragmentViewModel.deleteUser(userArrayList.get(viewHolder.getAdapterPosition()));
-//        }
-//    };
+    ItemTouchHelper.SimpleCallback itemTouchHelperCallback = new ItemTouchHelper.SimpleCallback(0,
+            ItemTouchHelper.RIGHT | ItemTouchHelper.LEFT) {
+        @Override
+        public boolean onMove(@NonNull RecyclerView recyclerView, @NonNull RecyclerView.ViewHolder viewHolder, @NonNull RecyclerView.ViewHolder target) {
+            return false;
+        }
+
+        @Override
+        public void onSwiped(@NonNull RecyclerView.ViewHolder viewHolder, int direction) {
+            fragmentViewModel.deleteUser(currentUserList.get(viewHolder.getAdapterPosition()));
+        }
+    };
 
 }

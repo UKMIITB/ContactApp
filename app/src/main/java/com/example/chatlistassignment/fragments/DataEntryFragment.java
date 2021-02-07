@@ -161,8 +161,11 @@ public class DataEntryFragment extends Fragment implements View.OnClickListener 
 
     private void checkPermissionAndStartCamera() {
         if (ContextCompat.checkSelfPermission(getContext(), Manifest.permission.CAMERA) !=
-                PackageManager.PERMISSION_GRANTED)
-            requestPermissions(new String[]{Manifest.permission.CAMERA}, REQUEST_CODE_CAMERA);
+                PackageManager.PERMISSION_GRANTED ||
+                ContextCompat.checkSelfPermission(getContext(), Manifest.permission.WRITE_EXTERNAL_STORAGE) !=
+                        PackageManager.PERMISSION_GRANTED)
+            requestPermissions(new String[]{Manifest.permission.CAMERA, Manifest.permission.WRITE_EXTERNAL_STORAGE},
+                    REQUEST_CODE_CAMERA);
         else
             startTakePictureIntent();
     }
@@ -170,10 +173,11 @@ public class DataEntryFragment extends Fragment implements View.OnClickListener 
     @Override
     public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
         if (requestCode == REQUEST_CODE_CAMERA) {
-            if (grantResults[0] == PackageManager.PERMISSION_GRANTED)
+            if (grantResults[0] == PackageManager.PERMISSION_GRANTED &&
+                    grantResults[1] == PackageManager.PERMISSION_GRANTED)
                 startTakePictureIntent();
             else
-                Toast.makeText(getContext(), "Failed. Please grant camera permission", Toast.LENGTH_SHORT).show();
+                Toast.makeText(getContext(), "Failed. Please grant camera & storage permission", Toast.LENGTH_SHORT).show();
         } else if (requestCode == REQUEST_CODE_GALLERY) {
             if (grantResults[0] == PackageManager.PERMISSION_GRANTED && grantResults[1] == PackageManager.PERMISSION_GRANTED)
                 startOpenGalleryIntent();

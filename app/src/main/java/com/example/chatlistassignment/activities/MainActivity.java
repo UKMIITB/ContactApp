@@ -8,7 +8,6 @@ import android.view.MenuItem;
 import android.widget.SearchView;
 
 import androidx.appcompat.app.AppCompatActivity;
-import androidx.core.view.MenuItemCompat;
 import androidx.lifecycle.Observer;
 import androidx.viewpager.widget.ViewPager;
 
@@ -48,15 +47,17 @@ public class MainActivity extends AppCompatActivity {
 
         MenuInflater inflater = getMenuInflater();
 
-        setMenu(inflater, menu);
-
         inflater.inflate(R.menu.menu, menu);
-        MenuItem searchViewItem = menu.findItem(R.id.app_bar_search);
-        final SearchView searchView = (SearchView) MenuItemCompat.getActionView(searchViewItem);
+
+        setMenu(menu);
+
+        MenuItem searchViewItem = menu.findItem(R.id.search);
+        SearchView searchView = (SearchView) searchViewItem.getActionView();
 
         searchView.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
             @Override
             public boolean onQueryTextSubmit(String query) {
+
                 searchView.clearFocus();
 
                 FragmentViewModel.setQueryString(query);
@@ -76,15 +77,18 @@ public class MainActivity extends AppCompatActivity {
         return super.onCreateOptionsMenu(menu);
     }
 
-    private void setMenu(MenuInflater inflater, Menu menu) {
+    private void setMenu(Menu menu) {
         FragmentViewModel.getIsMultiSelectOn().observe(this, new Observer<Boolean>() {
             @Override
             public void onChanged(Boolean aBoolean) {
-                menu.clear();
-                if (aBoolean)
-                    inflater.inflate(R.menu.multi_select_menu, menu);
-                else
-                    inflater.inflate(R.menu.menu, menu);
+//                menu.clear();
+                if (aBoolean) {
+                    menu.findItem(R.id.multi_select_delete).setVisible(true);
+                    menu.findItem(R.id.search).setVisible(false);
+                } else {
+                    menu.findItem(R.id.multi_select_delete).setVisible(false);
+                    menu.findItem(R.id.search).setVisible(true);
+                }
             }
         });
     }

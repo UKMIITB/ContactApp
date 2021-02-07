@@ -30,9 +30,6 @@ public interface UserDao {
     @Query("select * from userdb where name like :query or contactNumber like :query")
     DataSource.Factory<Integer, User> queryAllUser(String query);
 
-//    @Query("delete from userdb where _id in (:userArrayList)")
-//    Completable deleteListOfUsers(List<Integer> userArrayList);
-
     @Delete
     Completable deleteListOfUsers(List<User> userArrayList);
 }

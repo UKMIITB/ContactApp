@@ -72,7 +72,7 @@ public class FragmentViewModel extends AndroidViewModel {
     private static MutableLiveData<Boolean> isMultiSelectOn = new MutableLiveData<>();
 
     public void setIsMultiSelect(boolean isMultiSelect) {
-        isMultiSelectOn.setValue(isMultiSelect);
+        isMultiSelectOn.postValue(isMultiSelect);
     }
 
     public static LiveData<Boolean> getIsMultiSelectOn() {
@@ -95,6 +95,8 @@ public class FragmentViewModel extends AndroidViewModel {
                     public void onComplete() {
                         Log.d("TAG", "Inside onComplete of addUser in ViewModel");
                         successToast("User added successfully");
+                        isMultiSelectOn.postValue(false);
+
                     }
 
                     @Override
@@ -120,6 +122,8 @@ public class FragmentViewModel extends AndroidViewModel {
                     public void onComplete() {
                         Log.d("TAG", "Inside onComplete of deleteUser in ViewModel");
                         successToast("User data removed successfully");
+                        isMultiSelectOn.postValue(false);
+
                     }
 
                     @Override

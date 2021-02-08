@@ -128,6 +128,7 @@ public class ChatListFragment extends Fragment implements ItemClickListener {
 
     @Override
     public void onItemClicked(View view, User user) {
+        Log.d("TAG", "itemclicked: multi" + multiSelectStatus);
 
         if (multiSelectStatus) {
             if (!deleteUserList.contains(user)) {
@@ -148,6 +149,7 @@ public class ChatListFragment extends Fragment implements ItemClickListener {
 
     @Override
     public void onItemLongClicked(View view, User user, int index) {
+        Log.d("TAG", "index: " + index + "Name: " + user.getName());
 
         view.setBackgroundColor(ContextCompat.getColor(view.getContext(), R.color.grey));
         deleteUserList.add(user);
@@ -166,7 +168,7 @@ public class ChatListFragment extends Fragment implements ItemClickListener {
             }
 
             deleteUserList.clear();
-            fragmentViewModel.setIsMultiSelect(false);
+//            fragmentViewModel.setIsMultiSelect(false);
         }
         return super.onOptionsItemSelected(item);
     }

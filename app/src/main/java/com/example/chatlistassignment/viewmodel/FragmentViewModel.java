@@ -18,19 +18,26 @@ import com.example.chatlistassignment.R;
 import com.example.chatlistassignment.model.Contact;
 import com.example.chatlistassignment.model.User;
 import com.example.chatlistassignment.repository.LocalRepository;
+import com.example.chatlistassignment.utils.SyncNativeContacts;
 
 import java.util.List;
 
+import io.reactivex.Completable;
 import io.reactivex.CompletableObserver;
+import io.reactivex.Observable;
+import io.reactivex.Single;
+import io.reactivex.SingleObserver;
 import io.reactivex.android.schedulers.AndroidSchedulers;
 import io.reactivex.disposables.CompositeDisposable;
 import io.reactivex.disposables.Disposable;
+import io.reactivex.functions.Action;
 import io.reactivex.schedulers.Schedulers;
 
 
 public class FragmentViewModel extends AndroidViewModel {
 
-    public LiveData<PagedList<User>> userList;
+    public final static String TAG = "TAG"
+;    public LiveData<PagedList<User>> userList;
     private LocalRepository repository;
     private CompositeDisposable compositeDisposable = new CompositeDisposable();
 
@@ -39,12 +46,14 @@ public class FragmentViewModel extends AndroidViewModel {
     public LiveData<PagedList<Contact>> contactList;
     public LiveData<PagedList<Contact>> queryContactList;
 
+    SyncNativeContacts syncNativeContacts;
+
     public FragmentViewModel(@NonNull Application application) {
         super(application);
+        repository = new LocalRepository(getApplication());
     }
 
     public void init() {
-        repository = new LocalRepository(getApplication());
 
         PagedList.Config config = (new PagedList.Config.Builder()).setEnablePlaceholders(false)
                 .setInitialLoadSizeHint(10)
@@ -53,7 +62,6 @@ public class FragmentViewModel extends AndroidViewModel {
     }
 
     public void queryInit(String query) {
-        repository = new LocalRepository(getApplication());
 
         PagedList.Config config = (new PagedList.Config.Builder()).setEnablePlaceholders(false)
                 .setInitialLoadSizeHint(10)
@@ -62,7 +70,6 @@ public class FragmentViewModel extends AndroidViewModel {
     }
 
     public void contactInit() {
-        repository = new LocalRepository(getApplication());
 
         PagedList.Config config = (new PagedList.Config.Builder()).setEnablePlaceholders(false)
                 .setInitialLoadSizeHint(10)
@@ -240,5 +247,74 @@ public class FragmentViewModel extends AndroidViewModel {
     protected void onCleared() {
         super.onCleared();
         compositeDisposable.dispose();
+    }
+
+    public void completeContactSync() {
+        syncNativeContacts = new SyncNativeContacts(getApplication());
+        syncNativeContacts.getContactArrayList().doAfterSuccess(newlist -> addContactListToDB(newlist))
+                .subscribeOn(Schedulers.io())
+                .subscribe(new SingleObserver<List<Contact>>() {
+                    @Override
+                    public void onSubscribe(@io.reactivex.annotations.NonNull Disposable d) {
+                        Log.e(TAG, "onSubscribe: Inside complete sync  "   );
+                    }
+
+                    @Override
+                    public void onSuccess(@io.reactivex.annotations.NonNull List<Contact> contactList) {
+                        Log.e(TAG, "onSuccess: Inside complete sync   -->>  "+contactList.size()   );
+                    }
+
+                    @Override
+                    public void onError(@io.reactivex.annotations.NonNull Throwable e) {
+                        Log.e(TAG, "onError: Inside complete sync error ->> "+e.getMessage()   );
+                    }
+                });
+
+//        Completable.fromAction(new Action() {
+//            @Override
+//            public void run() throws Exception {
+//                syncNativeContacts.syncNativeContacts();
+//            }
+//        })
+//                .subscribeOn(Schedulers.io())
+//                .subscribe(new CompletableObserver() {
+//                    @Override
+//                    public void onSubscribe(@io.reactivex.annotations.NonNull Disposable d) {
+//                        Log.d("TAG", "Inside onSubscribe of syncContacts");
+//                    }
+//
+//                    @Override
+//                    public void onComplete() {
+//                        Log.d("TAG", "Inside onComplete of syncContacts");
+//                    }
+//
+//                    @Override
+//                    public void onError(@io.reactivex.annotations.NonNull Throwable e) {
+//                        Log.d("TAG", "Inside onError of syncContacts. :" + e.getMessage());
+//                    }
+//                });
+    }
+
+
+
+    private void addContactListToDB(List<Contact> contactList) {
+
+        repository.addListOfContact(contactList)
+                .subscribe(new CompletableObserver() {
+                    @Override
+                    public void onSubscribe(@io.reactivex.annotations.NonNull Disposable d) {
+                        Log.d("TAG", "Inside onSubscribe of addContactListDB in SyncNativeContacts");
+                    }
+
+                    @Override
+                    public void onComplete() {
+                        Log.d("TAG", "Inside onComplete of addContactListDB in SyncNativeContacts");
+                    }
+
+                    @Override
+                    public void onError(@io.reactivex.annotations.NonNull Throwable e) {
+                        Log.d("TAG", "Inside onError of addContactListDB in SyncNativeContacts.: " + e.getMessage());
+                    }
+                });
     }
 }

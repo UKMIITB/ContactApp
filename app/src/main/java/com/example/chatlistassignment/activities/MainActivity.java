@@ -3,6 +3,9 @@ package com.example.chatlistassignment.activities;
 import android.Manifest;
 import android.content.pm.PackageManager;
 import android.os.Bundle;
+import android.os.Handler;
+import android.os.Looper;
+import android.provider.ContactsContract;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuInflater;
@@ -14,10 +17,15 @@ import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.app.ActivityCompat;
 import androidx.lifecycle.Observer;
+import androidx.lifecycle.ViewModel;
+import androidx.lifecycle.ViewModelProvider;
+import androidx.lifecycle.ViewModelProviders;
 import androidx.viewpager.widget.ViewPager;
 
 import com.example.chatlistassignment.R;
 import com.example.chatlistassignment.adapters.ViewPagerAdapter;
+import com.example.chatlistassignment.utils.AndroidContactsChangeListener;
+import com.example.chatlistassignment.utils.ContactsChangeObserver;
 import com.example.chatlistassignment.utils.SyncNativeContacts;
 import com.example.chatlistassignment.viewmodel.FragmentViewModel;
 import com.google.android.material.tabs.TabLayout;
@@ -28,24 +36,35 @@ import io.reactivex.disposables.Disposable;
 import io.reactivex.functions.Action;
 import io.reactivex.schedulers.Schedulers;
 
-public class MainActivity extends AppCompatActivity {
+public class MainActivity extends AppCompatActivity   {
 
     ViewPager viewPager;
     TabLayout tabLayout;
     ViewPagerAdapter viewPagerAdapter;
-    SyncNativeContacts syncNativeContacts;
 
     private final int READ_CONTACT_REQUEST_CODE = 100;
+    FragmentViewModel fragmentViewModel;
+
+    AndroidContactsChangeListener.IChangeListener contactChangeListener = new AndroidContactsChangeListener.IChangeListener() {
+        @Override
+        public void onContactsChanged() {
+            fragmentViewModel.completeContactSync();
+        }
+    };
 
     @Override
-
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-
+        fragmentViewModel = ViewModelProviders.of(this).get(FragmentViewModel.class);
         init();
     }
 
+    @Override
+    protected void onResume() {
+        super.onResume();
+        AndroidContactsChangeListener.getInstance(this).startContactsObservation(contactChangeListener);
+    }
 
     private void init() {
         viewPager = findViewById(R.id.view_pager);
@@ -68,31 +87,7 @@ public class MainActivity extends AppCompatActivity {
     }
 
     private void syncContacts() {
-        syncNativeContacts = new SyncNativeContacts(this);
-
-        Completable.fromAction(new Action() {
-            @Override
-            public void run() throws Exception {
-                syncNativeContacts.syncNativeContacts();
-            }
-        })
-                .subscribeOn(Schedulers.io())
-                .subscribe(new CompletableObserver() {
-                    @Override
-                    public void onSubscribe(@io.reactivex.annotations.NonNull Disposable d) {
-                        Log.d("TAG", "Inside onSubscribe of syncContacts");
-                    }
-
-                    @Override
-                    public void onComplete() {
-                        Log.d("TAG", "Inside onComplete of syncContacts");
-                    }
-
-                    @Override
-                    public void onError(@io.reactivex.annotations.NonNull Throwable e) {
-                        Log.d("TAG", "Inside onError of syncContacts. :" + e.getMessage());
-                    }
-                });
+        fragmentViewModel.completeContactSync();
     }
 
     @Override
@@ -154,4 +149,12 @@ public class MainActivity extends AppCompatActivity {
             }
         });
     }
+
+
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        AndroidContactsChangeListener.getInstance(this).stopContactsObservation();
+    }
+
 }

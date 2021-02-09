@@ -20,9 +20,9 @@ public interface ContactDao {
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     Completable addListOfContact(List<Contact> contactList);
 
-    @Query("select * from contactdb")
+    @Query("select * from contactdb order by name asc")
     DataSource.Factory<Integer, Contact> getAllContacts();
 
-    @Query("select * from contactdb where name like :query or number like :query")
+    @Query("select * from contactdb where name like :query or number like :query order by name asc")
     DataSource.Factory<Integer, Contact> getQueryContact(String query);
 }

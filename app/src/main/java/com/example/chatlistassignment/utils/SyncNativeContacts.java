@@ -12,6 +12,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import io.reactivex.CompletableObserver;
+import io.reactivex.Single;
 import io.reactivex.annotations.NonNull;
 import io.reactivex.disposables.Disposable;
 
@@ -57,9 +58,12 @@ public class SyncNativeContacts {
                 });
     }
 
-    private void getContactArrayList() {
-        int count = 0;
+    public Single<List<Contact>> getContactArrayList() {
+        return Single.fromCallable(() ->{
 
+
+        int count = 0;
+        List<Contact> contactList = new ArrayList<>();
         Cursor cursor = context.getContentResolver().query(ContactsContract.Contacts.CONTENT_URI,
                 null, null, null, null);
 
@@ -89,9 +93,12 @@ public class SyncNativeContacts {
                 contactList.add(contact);
             }
         }
+
         if (cursor != null)
             cursor.close();
         Log.d("TAG", "Total Count: " + count);
 
+        return contactList;
+        });
     }
 }

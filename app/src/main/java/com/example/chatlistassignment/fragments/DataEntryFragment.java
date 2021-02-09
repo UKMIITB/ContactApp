@@ -36,6 +36,7 @@ import com.example.chatlistassignment.viewmodel.FragmentViewModel;
 
 import java.io.IOException;
 import java.util.Calendar;
+import java.util.Date;
 
 import static android.app.Activity.RESULT_CANCELED;
 
@@ -241,7 +242,7 @@ public class DataEntryFragment extends Fragment implements View.OnClickListener 
         int indexOfColon = birthDateString.indexOf(":");
         String birthDate = birthDateString.substring(indexOfColon + 1);
 
-        User user = new User(userName, contactNumber, ProfilePicPath, birthDate);
+        User user = new User(userName, contactNumber, ProfilePicPath, birthDate, new Date());
 
         fragmentViewModel.addUser(user);
 

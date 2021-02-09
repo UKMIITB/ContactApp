@@ -18,7 +18,7 @@ import com.example.chatlistassignment.ItemClickListener;
 import com.example.chatlistassignment.R;
 import com.example.chatlistassignment.model.User;
 
-public class RecyclerViewAdapter extends PagedListAdapter<User, RecyclerViewAdapter.ViewHolder> {
+public class ChatListRecyclerViewAdapter extends PagedListAdapter<User, ChatListRecyclerViewAdapter.ViewHolder> {
     ItemClickListener itemClickListener;
 
 
@@ -34,14 +34,10 @@ public class RecyclerViewAdapter extends PagedListAdapter<User, RecyclerViewAdap
         }
     };
 
-    public RecyclerViewAdapter(ItemClickListener itemClickListener) {
+    public ChatListRecyclerViewAdapter(ItemClickListener itemClickListener) {
         super(DIFF_CALLBACK);
         this.itemClickListener = itemClickListener;
     }
-
-//    public void setItemClickListener(ItemClickListener itemClickListener) {
-//        this.itemClickListener = itemClickListener;
-//    }
 
     @NonNull
     @Override
@@ -73,7 +69,6 @@ public class RecyclerViewAdapter extends PagedListAdapter<User, RecyclerViewAdap
 
         ImageView imageViewProfilePic;
         TextView textViewName, textViewNumber;
-//        Button buttonEdit, buttonDelete;
 
         public ViewHolder(@NonNull View itemView) {
             super(itemView);
@@ -82,15 +77,10 @@ public class RecyclerViewAdapter extends PagedListAdapter<User, RecyclerViewAdap
             textViewName = itemView.findViewById(R.id.text_view_name);
             textViewNumber = itemView.findViewById(R.id.text_view_number);
 
-//            buttonEdit = itemView.findViewById(R.id.button_edit);
-//            buttonDelete = itemView.findViewById(R.id.button_delete);
-
             itemView.setOnClickListener(this);
 
             itemView.setOnLongClickListener(this);
 
-//            buttonEdit.setOnClickListener(this);
-//            buttonDelete.setOnClickListener(this);
         }
 
         @Override

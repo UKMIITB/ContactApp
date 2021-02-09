@@ -15,6 +15,7 @@ import androidx.paging.LivePagedListBuilder;
 import androidx.paging.PagedList;
 
 import com.example.chatlistassignment.R;
+import com.example.chatlistassignment.model.Contact;
 import com.example.chatlistassignment.model.User;
 import com.example.chatlistassignment.repository.LocalRepository;
 
@@ -34,6 +35,8 @@ public class FragmentViewModel extends AndroidViewModel {
     private CompositeDisposable compositeDisposable = new CompositeDisposable();
 
     public LiveData<PagedList<User>> queriedUserList;
+
+    public LiveData<PagedList<Contact>> contactList;
 
     public FragmentViewModel(@NonNull Application application) {
         super(application);
@@ -55,6 +58,16 @@ public class FragmentViewModel extends AndroidViewModel {
                 .setInitialLoadSizeHint(10)
                 .setPageSize(10).build();
         queriedUserList = new LivePagedListBuilder<>(repository.queryAllUser(query), config).build();
+    }
+
+    public void contactInit() {
+        repository = new LocalRepository(getApplication());
+
+        PagedList.Config config = (new PagedList.Config.Builder()).setEnablePlaceholders(false)
+                .setInitialLoadSizeHint(10)
+                .setPageSize(10).build();
+
+        contactList = new LivePagedListBuilder<>(repository.getAllContacts(), config).build();
     }
 
     private Toast toast;

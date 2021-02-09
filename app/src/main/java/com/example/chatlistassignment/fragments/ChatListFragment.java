@@ -21,7 +21,7 @@ import androidx.recyclerview.widget.RecyclerView;
 import com.example.chatlistassignment.ItemClickListener;
 import com.example.chatlistassignment.R;
 import com.example.chatlistassignment.activities.EditUserInfoActivity;
-import com.example.chatlistassignment.adapters.RecyclerViewAdapter;
+import com.example.chatlistassignment.adapters.ChatListRecyclerViewAdapter;
 import com.example.chatlistassignment.model.User;
 import com.example.chatlistassignment.viewmodel.FragmentViewModel;
 
@@ -33,7 +33,7 @@ public class ChatListFragment extends Fragment implements ItemClickListener {
 
     RecyclerView recyclerViewChatList;
     RecyclerView.LayoutManager layoutManager;
-    RecyclerViewAdapter recyclerViewAdapter;
+    ChatListRecyclerViewAdapter chatListRecyclerViewAdapter;
 
     FragmentViewModel fragmentViewModel;
 
@@ -41,6 +41,8 @@ public class ChatListFragment extends Fragment implements ItemClickListener {
 
     ArrayList<User> deleteUserList;
     List<User> currentUserList;
+
+    boolean isFragmentActive = false;
 
 
     @Override
@@ -81,15 +83,15 @@ public class ChatListFragment extends Fragment implements ItemClickListener {
             fragmentViewModel.getQueryString().observe(getViewLifecycleOwner(), new Observer<String>() {
                 @Override
                 public void onChanged(String query) {
-                    Log.d("TAG", "Inside ChatListFragment: " + query);
-                    queryChatList(query);
+                    if (isFragmentActive)
+                        queryChatList(query);
                 }
             });
         }
-
     }
 
     private void queryChatList(String query) {
+        Log.d("TAG", "Inside ChatListFragment queryChatList: " + query);
         query = "%" + query + "%";
 
         fragmentViewModel.queryInit(query);
@@ -97,7 +99,7 @@ public class ChatListFragment extends Fragment implements ItemClickListener {
         fragmentViewModel.queriedUserList.observe(this, new Observer<PagedList<User>>() {
             @Override
             public void onChanged(PagedList<User> users) {
-                recyclerViewAdapter.submitList(users);
+                chatListRecyclerViewAdapter.submitList(users);
             }
         });
     }
@@ -109,7 +111,7 @@ public class ChatListFragment extends Fragment implements ItemClickListener {
             public void onChanged(PagedList<User> users) {
 //                currentUserList.clear();
                 currentUserList = users.snapshot();
-                recyclerViewAdapter.submitList(users);
+                chatListRecyclerViewAdapter.submitList(users);
             }
         });
 
@@ -118,11 +120,11 @@ public class ChatListFragment extends Fragment implements ItemClickListener {
     private void init(View view) {
         recyclerViewChatList = view.findViewById(R.id.recyclerview_chat_list);
         layoutManager = new LinearLayoutManager(getContext());
-        recyclerViewAdapter = new RecyclerViewAdapter(this);
+        chatListRecyclerViewAdapter = new ChatListRecyclerViewAdapter(this);
 
         new ItemTouchHelper(itemTouchHelperCallback).attachToRecyclerView(recyclerViewChatList);
         recyclerViewChatList.setLayoutManager(layoutManager);
-        recyclerViewChatList.setAdapter(recyclerViewAdapter);
+        recyclerViewChatList.setAdapter(chatListRecyclerViewAdapter);
 
     }
 
@@ -186,4 +188,10 @@ public class ChatListFragment extends Fragment implements ItemClickListener {
         }
     };
 
+    @Override
+    public void setMenuVisibility(boolean menuVisible) {
+        super.setMenuVisibility(menuVisible);
+
+        isFragmentActive = menuVisible;
+    }
 }

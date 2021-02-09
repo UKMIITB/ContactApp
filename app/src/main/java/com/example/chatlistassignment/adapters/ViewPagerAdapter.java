@@ -7,6 +7,7 @@ import androidx.fragment.app.FragmentManager;
 import androidx.fragment.app.FragmentPagerAdapter;
 
 import com.example.chatlistassignment.fragments.ChatListFragment;
+import com.example.chatlistassignment.fragments.ContactListFragment;
 import com.example.chatlistassignment.fragments.DataEntryFragment;
 
 public class ViewPagerAdapter extends FragmentPagerAdapter {
@@ -18,23 +19,33 @@ public class ViewPagerAdapter extends FragmentPagerAdapter {
     @NonNull
     @Override
     public Fragment getItem(int position) {
-        if (position == 1)
-            return new DataEntryFragment();
-        else
-            return new ChatListFragment();
+
+        switch (position) {
+            case 1:
+                return new DataEntryFragment();
+            case 2:
+                return new ContactListFragment();
+            default:
+                return new ChatListFragment();
+        }
     }
 
     @Override
     public int getCount() {
-        return 2;
+        return 3;
     }
 
     @Nullable
     @Override
     public CharSequence getPageTitle(int position) {
-        if (position == 1)
-            return "DATA ENTRY";
-        else
-            return "CHAT LIST";
+
+        switch (position) {
+            case 1:
+                return "DATA ENTRY";
+            case 2:
+                return "CONTACT LIST";
+            default:
+                return "CHAT LIST";
+        }
     }
 }

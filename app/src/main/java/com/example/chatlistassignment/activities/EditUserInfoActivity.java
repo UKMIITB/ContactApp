@@ -80,12 +80,17 @@ public class EditUserInfoActivity extends AppCompatActivity implements View.OnCl
         String DOBBuilder = "Date of Birth: " + user.getDateOfBirth();
         textViewBirthday.setText(DOBBuilder);
 
-        if (user.getProfilePic() != null) {
+        if (user.getProfilePic() != null)
             Glide.with(this)
                     .load(Uri.parse(user.getProfilePic()))
                     .error(R.drawable.ic_baseline_person_24)
                     .into(imageViewProfilePic);
-        }
+        else
+            Glide.with(this)
+                    .load(R.drawable.ic_baseline_person_24)
+                    .error(R.drawable.ic_baseline_person_24)
+                    .into(imageViewProfilePic);
+
 
         ProfilePicPath = user.getProfilePic();
     }
@@ -138,7 +143,6 @@ public class EditUserInfoActivity extends AppCompatActivity implements View.OnCl
         user.setContactNumber(contactNumber);
         user.setDateOfBirth(birthDate);
         user.setProfilePic(ProfilePicPath);
-//        User userUpdated = new User(userName, contactNumber, ProfilePicPath, birthDate);
 
         fragmentViewModel.updateUser(user);
 

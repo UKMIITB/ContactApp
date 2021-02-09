@@ -4,9 +4,11 @@ import android.content.Context;
 
 import androidx.paging.DataSource;
 
+import com.example.chatlistassignment.model.Contact;
 import com.example.chatlistassignment.model.User;
+import com.example.chatlistassignment.repository.room.ContactDao;
+import com.example.chatlistassignment.repository.room.Database;
 import com.example.chatlistassignment.repository.room.UserDao;
-import com.example.chatlistassignment.repository.room.UserDatabase;
 
 import java.util.List;
 
@@ -15,9 +17,11 @@ import io.reactivex.Completable;
 public class LocalRepository {
 
     private UserDao userDao;
+    private ContactDao contactDao;
 
-    public LocalRepository(Context ctx) {
-        userDao = UserDatabase.getInstance(ctx).userDao();
+    public LocalRepository(Context context) {
+        userDao = Database.getInstance(context).userDao();
+        contactDao = Database.getInstance(context).contactDao();
     }
 
 
@@ -46,5 +50,20 @@ public class LocalRepository {
         return userDao.deleteListOfUsers(userArrayList);
     }
 
+    public Completable addContact(Contact contact) {
+        return contactDao.addContact(contact);
+    }
+
+    public Completable addListOfContact(List<Contact> contactList) {
+        return contactDao.addListOfContact(contactList);
+    }
+
+    public DataSource.Factory<Integer, Contact> getAllContacts() {
+        return contactDao.getAllContacts();
+    }
+
+    public DataSource.Factory<Integer, Contact> getQueryContact(String query) {
+        return contactDao.getQueryContact(query);
+    }
 
 }

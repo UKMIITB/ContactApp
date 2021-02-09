@@ -71,15 +71,23 @@ public class ContactListFragment extends Fragment {
         fragmentViewModel.getQueryString().observe(getViewLifecycleOwner(), new Observer<String>() {
             @Override
             public void onChanged(String query) {
-                if(isFragmentActive)
+                if (isFragmentActive)
                     queryContactList(query);
             }
         });
     }
 
-    private void queryContactList(String query)
-    {
+    private void queryContactList(String query) {
+        query = "%" + query + "%";
 
+        fragmentViewModel.queryContactInit(query);
+
+        fragmentViewModel.queryContactList.observe(this, new Observer<PagedList<Contact>>() {
+            @Override
+            public void onChanged(PagedList<Contact> contacts) {
+                recyclerviewAdapter.submitList(contacts);
+            }
+        });
     }
 
     @Override

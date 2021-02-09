@@ -3,8 +3,12 @@ package com.example.chatlistassignment.model;
 import androidx.annotation.NonNull;
 import androidx.room.Entity;
 import androidx.room.PrimaryKey;
+import androidx.room.TypeConverters;
+
+import com.example.chatlistassignment.repository.room.DateConverter;
 
 import java.io.Serializable;
+import java.util.Date;
 import java.util.Objects;
 
 @Entity(tableName = "UserDB")
@@ -19,15 +23,19 @@ public class User implements Serializable {
     private String profilePic;
     private String dateOfBirth;
 
+    @TypeConverters(DateConverter.class)
+    private Date date;
+
     public void set_id(@NonNull Integer _id) {
         this._id = _id;
     }
 
-    public User(String name, String contactNumber, String profilePic, String dateOfBirth) {
+    public User(String name, String contactNumber, String profilePic, String dateOfBirth, Date date) {
         this.name = name;
         this.contactNumber = contactNumber;
         this.profilePic = profilePic;
         this.dateOfBirth = dateOfBirth;
+        this.date = date;
     }
 
     public User() {
@@ -68,6 +76,14 @@ public class User implements Serializable {
 
     public void setDateOfBirth(String dateOfBirth) {
         this.dateOfBirth = dateOfBirth;
+    }
+
+    public Date getDate() {
+        return date;
+    }
+
+    public void setDate(Date date) {
+        this.date = date;
     }
 
     @Override

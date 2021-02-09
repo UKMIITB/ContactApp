@@ -37,6 +37,7 @@ public class FragmentViewModel extends AndroidViewModel {
     public LiveData<PagedList<User>> queriedUserList;
 
     public LiveData<PagedList<Contact>> contactList;
+    public LiveData<PagedList<Contact>> queryContactList;
 
     public FragmentViewModel(@NonNull Application application) {
         super(application);
@@ -68,6 +69,16 @@ public class FragmentViewModel extends AndroidViewModel {
                 .setPageSize(10).build();
 
         contactList = new LivePagedListBuilder<>(repository.getAllContacts(), config).build();
+    }
+
+    public void queryContactInit(String query) {
+        repository = new LocalRepository(getApplication());
+
+        PagedList.Config config = (new PagedList.Config.Builder()).setEnablePlaceholders(false)
+                .setInitialLoadSizeHint(10)
+                .setPageSize(10).build();
+
+        queryContactList = new LivePagedListBuilder<>(repository.getQueryContact(query), config).build();
     }
 
     private Toast toast;

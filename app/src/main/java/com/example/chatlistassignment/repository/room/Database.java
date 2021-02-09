@@ -19,15 +19,15 @@ public abstract class Database extends RoomDatabase {
     public static Database getInstance(Context context) {
         if (database == null)
             database = Room.databaseBuilder(context, Database.class, "User_Database").build();
-//        userDatabase = Room.databaseBuilder(context, UserDatabase.class, "User_Database")
-//                .addMigrations(MIGRATION_1_2).build();
+//            database = Room.databaseBuilder(context, Database.class, "User_Database")
+//                    .addMigrations(MIGRATION_1_2).build();
         return database;
     }
 
     static final Migration MIGRATION_1_2 = new Migration(1, 2) {
         @Override
         public void migrate(@NonNull SupportSQLiteDatabase database) {
-            //database.execSQL();
+//            database.execSQL("alter table userdb add date ");
         }
     };
 

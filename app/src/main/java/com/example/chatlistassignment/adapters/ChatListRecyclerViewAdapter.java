@@ -53,15 +53,20 @@ public class ChatListRecyclerViewAdapter extends PagedListAdapter<User, ChatList
         holder.textViewNumber.setText(user.getContactNumber());
 
         if (user.getProfilePic() != null)
+        {
+            Log.e("TAG", "onBindViewHolder: Profiel Pic Path  -->>"+user.getProfilePic() );
             Glide.with(holder.imageViewProfilePic.getContext())
                     .load(Uri.parse(user.getProfilePic()))
                     .error(R.drawable.ic_baseline_person_24)
                     .into(holder.imageViewProfilePic);
+        }
         else
+        {
             Glide.with(holder.imageViewProfilePic.getContext())
                     .load(R.drawable.ic_baseline_person_24)
                     .error(R.drawable.ic_baseline_person_24)
                     .into(holder.imageViewProfilePic);
+        }
     }
 
 

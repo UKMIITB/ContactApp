@@ -201,6 +201,7 @@ public class ProfilePicActivity extends AppCompatActivity {
     }
 
     private void updateUserData() {
+        Log.d("TAG", "update user data in profile pic activity: " + user.getProfilePic());
         fragmentViewModel.updateUser(user);
     }
 }

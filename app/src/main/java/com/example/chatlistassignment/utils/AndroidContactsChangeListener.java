@@ -14,7 +14,7 @@ public class AndroidContactsChangeListener {
     private final Context mContext;
     private static AndroidContactsChangeListener mInstance;
     private static IChangeListener mListener;
-    private  ContactsChangeObserver changeObserver;
+    private ContactsChangeObserver changeObserver;
 
     private final static long CHANGE_UPDATE_TIME = 2000;
     private long mLastTimeChangeProcessed = 0l;
@@ -23,41 +23,39 @@ public class AndroidContactsChangeListener {
         void onContactsChanged();
     }
 
-    private AndroidContactsChangeListener(Context context){
+    private AndroidContactsChangeListener(Context context) {
         mContext = context;
         mContentReslover = context.getContentResolver();
     }
 
-    public  static AndroidContactsChangeListener getInstance(Context context){
-        if (mInstance == null){
+    public static AndroidContactsChangeListener getInstance(Context context) {
+        if (mInstance == null) {
             mInstance = new AndroidContactsChangeListener(context);
         }
         return mInstance;
     }
 
 
-    public void startContactsObservation(IChangeListener iChangeListener){
+    public void startContactsObservation(IChangeListener iChangeListener) {
         changeObserver = new ContactsChangeObserver(new Handler(Looper.getMainLooper()));
-        mContentReslover.registerContentObserver(ContactsContract.CommonDataKinds.Phone.CONTENT_URI,true,changeObserver);
+        mContentReslover.registerContentObserver(ContactsContract.CommonDataKinds.Phone.CONTENT_URI, true, changeObserver);
         mListener = iChangeListener;
 
     }
 
-    public void stopContactsObservation(){
+    public void stopContactsObservation() {
         mContentReslover.unregisterContentObserver(changeObserver);
         mListener = null;
     }
 
-    private void notifyContactChanged(){
-        if(mListener != null) {
+    private void notifyContactChanged() {
+        if (mListener != null) {
             mListener.onContactsChanged();
         }
     }
 
 
-
     private class ContactsChangeObserver extends ContentObserver {
-
 
 
         public ContactsChangeObserver(Handler handler) {
@@ -68,12 +66,11 @@ public class AndroidContactsChangeListener {
         public void onChange(boolean selfChange) {
             super.onChange(selfChange);
             long mLastTimeChangeOccured = System.currentTimeMillis();
-            if (mLastTimeChangeOccured - mLastTimeChangeProcessed > CHANGE_UPDATE_TIME){
+            if (mLastTimeChangeOccured - mLastTimeChangeProcessed > CHANGE_UPDATE_TIME) {
                 notifyContactChanged();
-                Log.e("TAG", "onChange:Contacts Changed , now call sync  ----------->> " );
+                Log.e("TAG", "onChange:Contacts Changed , now call sync  ----------->> ");
                 mLastTimeChangeProcessed = System.currentTimeMillis();
             }
-
         }
     }
 }

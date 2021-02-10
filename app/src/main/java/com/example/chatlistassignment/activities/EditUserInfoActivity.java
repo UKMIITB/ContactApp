@@ -4,6 +4,7 @@ import android.app.DatePickerDialog;
 import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.DatePicker;
@@ -27,7 +28,7 @@ public class EditUserInfoActivity extends AppCompatActivity implements View.OnCl
     EditText editTextName, editTextNumber;
     Button buttonDatePicker, buttonSave;
     TextView textViewBirthday;
-    ImageView imageViewProfilePic;
+    ImageView imageViewProfilePic, imageViewEditProfilePic;
 
     User user;
 
@@ -53,10 +54,12 @@ public class EditUserInfoActivity extends AppCompatActivity implements View.OnCl
         buttonSave = findViewById(R.id.button_save);
         textViewBirthday = findViewById(R.id.text_view_birthday);
         imageViewProfilePic = findViewById(R.id.image_view_profile_pic);
+        imageViewEditProfilePic = findViewById(R.id.image_view_edit_profile_pic);
 
         buttonDatePicker.setOnClickListener(this);
         buttonSave.setOnClickListener(this);
         imageViewProfilePic.setOnClickListener(this);
+        imageViewEditProfilePic.setOnClickListener(this);
 
         editTextName.setText(user.getName());
         editTextNumber.setText(user.getContactNumber());
@@ -132,6 +135,7 @@ public class EditUserInfoActivity extends AppCompatActivity implements View.OnCl
 
 
     private void showProfilePic() {
+        Log.d("TAG", "Show profilepic called from, edituseractivity: " + user.getProfilePic());
         Intent intentProfilePicActivity = new Intent(this, ProfilePicActivity.class);
         intentProfilePicActivity.putExtra("User", user);
         startActivity(intentProfilePicActivity);

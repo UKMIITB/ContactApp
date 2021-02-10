@@ -14,7 +14,6 @@ import java.util.Objects;
 @Entity(tableName = "UserDB")
 public class User implements Serializable {
 
-
     @PrimaryKey(autoGenerate = true)
     @NonNull
     private Integer _id;

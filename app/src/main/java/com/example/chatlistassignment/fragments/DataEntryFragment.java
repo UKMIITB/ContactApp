@@ -25,7 +25,7 @@ import androidx.annotation.Nullable;
 import androidx.appcompat.app.AlertDialog;
 import androidx.core.content.ContextCompat;
 import androidx.fragment.app.Fragment;
-import androidx.lifecycle.ViewModelProviders;
+import androidx.lifecycle.ViewModelProvider;
 import androidx.viewpager.widget.ViewPager;
 
 import com.bumptech.glide.Glide;
@@ -45,9 +45,13 @@ public class DataEntryFragment extends Fragment implements View.OnClickListener 
     EditText editTextUserName, editTextContactNumber;
     Button buttonSave, buttonSelectProfilePic;
     TextView textViewBirthday, textViewDatePicker;
-    String ProfilePicPath;
+    String profilePicPath;
     ImageView imageViewProfilePic;
     FragmentViewModel fragmentViewModel;
+
+    User user;
+
+    boolean isEditInfoActivity;
 
     private final int REQUEST_CODE_CAMERA = 0;
     private final int REQUEST_CODE_GALLERY = 1;
@@ -55,7 +59,7 @@ public class DataEntryFragment extends Fragment implements View.OnClickListener 
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        fragmentViewModel = ViewModelProviders.of(this).get(FragmentViewModel.class);
+        fragmentViewModel = new ViewModelProvider(this).get(FragmentViewModel.class);
     }
 
     @Override
@@ -65,8 +69,18 @@ public class DataEntryFragment extends Fragment implements View.OnClickListener 
         View view = inflater.inflate(R.layout.fragment_data_entry, container, false);
         init(view);
         fragmentViewModel.init();
+
+        if (getArguments() != null)
+            isEditInfoActivity = getArguments().getBoolean("IsEditInfoActivity", false);
+        else
+            isEditInfoActivity = false;
+
+        if (isEditInfoActivity)
+            displayEditInfo((User) getArguments().getSerializable("User"));
+
         return view;
     }
+
 
     private void init(View view) {
         editTextUserName = view.findViewById(R.id.edit_text_username);
@@ -151,7 +165,7 @@ public class DataEntryFragment extends Fragment implements View.OnClickListener 
     }
 
     private void startOpenGalleryIntent() {
-        Intent intentPickPhoto = new Intent(Intent.ACTION_PICK, MediaStore.Images.Media.INTERNAL_CONTENT_URI);
+        Intent intentPickPhoto = new Intent(Intent.ACTION_OPEN_DOCUMENT, MediaStore.Images.Media.INTERNAL_CONTENT_URI);
         startActivityForResult(intentPickPhoto, REQUEST_CODE_GALLERY);
     }
 
@@ -206,13 +220,13 @@ public class DataEntryFragment extends Fragment implements View.OnClickListener 
                     }
 
                     updateProfilePic(cameraImageUri);
-                    ProfilePicPath = cameraImageUri.toString();
+                    profilePicPath = cameraImageUri.toString();
                     break;
 
                 case REQUEST_CODE_GALLERY:
                     Uri selectedImageUri = data.getData();
                     Log.d("TAG", "URi: " + selectedImageUri.getPath());
-                    ProfilePicPath = selectedImageUri.toString();
+                    profilePicPath = selectedImageUri.toString();
 
                     updateProfilePic(selectedImageUri);
                     break;
@@ -220,12 +234,20 @@ public class DataEntryFragment extends Fragment implements View.OnClickListener 
         }
     }
 
-
-    public void updateProfilePic(Uri picUri) {
+    private void updateProfilePic(Uri picUri) {
         Glide.with(getContext())
                 .load(picUri)
                 .error(R.drawable.ic_baseline_person_24)
                 .into(imageViewProfilePic);
+    }
+
+    private void updateProfilePic(String profilePic) {
+        if (profilePic != null)
+            updateProfilePic(Uri.parse(profilePic));
+        else
+            Glide.with(getContext())
+                    .load(R.drawable.ic_baseline_person_24)
+                    .into(imageViewProfilePic);
     }
 
 
@@ -242,13 +264,23 @@ public class DataEntryFragment extends Fragment implements View.OnClickListener 
         int indexOfColon = birthDateString.indexOf(":");
         String birthDate = birthDateString.substring(indexOfColon + 1);
 
-        User user = new User(userName, contactNumber, ProfilePicPath, birthDate, new Date());
-
-        fragmentViewModel.addUser(user);
+        if (!isEditInfoActivity) {
+            user = new User(userName, contactNumber, profilePicPath, birthDate, new Date());
+            fragmentViewModel.addUser(user);
+        } else {
+            user.setName(userName);
+            user.setContactNumber(contactNumber);
+            user.setDateOfBirth(birthDate);
+            user.setProfilePic(profilePicPath);
+            fragmentViewModel.updateUser(user);
+        }
 
         clearInputFields();
 
-        changeTabChatList();
+        if (!isEditInfoActivity)
+            changeTabChatList();
+        else
+            getActivity().finish();
 
     }
 
@@ -263,5 +295,16 @@ public class DataEntryFragment extends Fragment implements View.OnClickListener 
         textViewBirthday.setText(R.string.birthday_selected);
         imageViewProfilePic.setImageDrawable(null);
         imageViewProfilePic.setImageResource(R.drawable.ic_baseline_person_24);
+    }
+
+    private void displayEditInfo(User user) {
+        editTextUserName.setText(user.getName());
+        editTextContactNumber.setText(user.getContactNumber());
+
+        String birthDate = "Birthday selected is :" + user.getDateOfBirth();
+        textViewBirthday.setText(birthDate);
+
+        updateProfilePic(user.getProfilePic());
+        this.user = user;
     }
 }

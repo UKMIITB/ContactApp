@@ -20,8 +20,6 @@ import com.example.chatlistassignment.R;
 import com.example.chatlistassignment.model.User;
 import com.example.chatlistassignment.utils.DateUtils;
 
-import java.util.Date;
-
 public class ChatListRecyclerViewAdapter extends PagedListAdapter<User, ChatListRecyclerViewAdapter.ViewHolder> {
     ItemClickListener itemClickListener;
 
@@ -55,7 +53,7 @@ public class ChatListRecyclerViewAdapter extends PagedListAdapter<User, ChatList
         User user = getItem(position);
         holder.textViewName.setText(user.getName());
         holder.textViewNumber.setText(user.getContactNumber());
-        setUpHeaderData(user, holder.txtHeader,position);
+        setUpHeaderData(user, holder.txtHeader, position);
 
         if (user.getProfilePic() != null) {
             Log.e("TAG", "onBindViewHolder: Profiel Pic Path  -->>" + user.getProfilePic());
@@ -75,25 +73,25 @@ public class ChatListRecyclerViewAdapter extends PagedListAdapter<User, ChatList
         if (user == null) {
             return;
         }
-        Pair<String, String> timeDateForCurrentUser = DateUtils.getHeaderDateAndTime(new Date(user.getCreationTime()));
-        if(position > 0){
+        Pair<String, String> timeDateForCurrentUser = DateUtils.getHeaderDateAndTime(user.getDate());
+        if (position > 0) {
             User prevUser = getItem(position - 1);
-            if(prevUser != null){
-                Pair<String, String> timeDateForPrevUser = DateUtils.getHeaderDateAndTime(new Date(prevUser.getCreationTime()));
-                if(timeDateForCurrentUser.first.toLowerCase().trim().equals(timeDateForPrevUser.first.toLowerCase().trim())){
+            if (prevUser != null) {
+                Pair<String, String> timeDateForPrevUser = DateUtils.getHeaderDateAndTime(prevUser.getDate());
+                if (timeDateForCurrentUser.first.toLowerCase().trim().equals(timeDateForPrevUser.first.toLowerCase().trim())) {
                     dateTextView.setVisibility(View.GONE);
-                } else  {
-                    setHeaderDate(timeDateForCurrentUser.first,dateTextView);
+                } else {
+                    setHeaderDate(timeDateForCurrentUser.first, dateTextView);
                 }
             } else {
-                setHeaderDate(timeDateForCurrentUser.first,dateTextView);
+                setHeaderDate(timeDateForCurrentUser.first, dateTextView);
             }
         } else {
-            setHeaderDate(timeDateForCurrentUser.first,dateTextView);
+            setHeaderDate(timeDateForCurrentUser.first, dateTextView);
         }
     }
 
-    private void setHeaderDate(String  date, TextView dateTextView){
+    private void setHeaderDate(String date, TextView dateTextView) {
         dateTextView.setVisibility(View.VISIBLE);
         dateTextView.setText(date);
     }

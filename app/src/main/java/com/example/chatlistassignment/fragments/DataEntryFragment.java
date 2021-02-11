@@ -283,7 +283,7 @@ public class DataEntryFragment extends Fragment implements View.OnClickListener 
         String birthDate = birthDateString.substring(indexOfColon + 1);
 
         if (!isEditInfoActivity) {
-            user = new User(userName, contactNumber, profilePicPath, birthDate, new Date(), System.currentTimeMillis());
+            user = new User(userName, contactNumber, profilePicPath, birthDate, new Date());
             fragmentViewModel.addUser(user);
         } else {
             user.setName(userName);

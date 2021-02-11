@@ -30,8 +30,6 @@ public class EditUserInfoActivity extends AppCompatActivity {
         DataEntryFragment dataEntryFragment = new DataEntryFragment();
         dataEntryFragment.setArguments(bundle);
 
-        Log.d("TAG", "startDataEntryFragment in EditUserInfoActivity");
-        Log.d("TAG", "Name passed: " + user.getName());
         getSupportFragmentManager()
                 .beginTransaction()
                 .replace(R.id.fragment_frame_container, dataEntryFragment)

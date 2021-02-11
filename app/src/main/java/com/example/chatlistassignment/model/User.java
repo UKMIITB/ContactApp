@@ -21,6 +21,7 @@ public class User implements Serializable {
     private String contactNumber;
     private String profilePic;
     private String dateOfBirth;
+    private long creationTime;
 
     @TypeConverters(DateConverter.class)
     private Date date;
@@ -29,12 +30,21 @@ public class User implements Serializable {
         this._id = _id;
     }
 
-    public User(String name, String contactNumber, String profilePic, String dateOfBirth, Date date) {
+    public long getCreationTime() {
+        return creationTime;
+    }
+
+    public void setCreationTime(long creationTime) {
+        this.creationTime = creationTime;
+    }
+
+    public User(String name, String contactNumber, String profilePic, String dateOfBirth, Date date, long creationTime) {
         this.name = name;
         this.contactNumber = contactNumber;
         this.profilePic = profilePic;
         this.dateOfBirth = dateOfBirth;
         this.date = date;
+        this.creationTime = creationTime;
     }
 
     public User() {
@@ -94,11 +104,12 @@ public class User implements Serializable {
                 Objects.equals(name, user.name) &&
                 Objects.equals(contactNumber, user.contactNumber) &&
                 Objects.equals(profilePic, user.profilePic) &&
-                Objects.equals(dateOfBirth, user.dateOfBirth);
+                Objects.equals(dateOfBirth, user.dateOfBirth) &&
+                Objects.equals(creationTime, user.creationTime);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(_id, name, contactNumber, profilePic, dateOfBirth);
+        return Objects.hash(_id, name, contactNumber, profilePic, dateOfBirth, creationTime);
     }
 }

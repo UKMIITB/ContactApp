@@ -42,7 +42,7 @@ import static android.app.Activity.RESULT_CANCELED;
 
 public class DataEntryFragment extends Fragment implements View.OnClickListener {
 
-    EditText editTextUserName, editTextContactNumber;
+    EditText editTextUserName, editTextContactNumber, editTextContactNumber2, editTextContactNumber3;
     Button buttonSave, buttonSelectProfilePic;
     TextView textViewBirthday, textViewDatePicker;
     String profilePicPath;
@@ -67,13 +67,14 @@ public class DataEntryFragment extends Fragment implements View.OnClickListener 
                              Bundle savedInstanceState) {
 
         View view = inflater.inflate(R.layout.fragment_data_entry, container, false);
-        init(view);
-        fragmentViewModel.init();
 
         if (getArguments() != null)
-            isEditInfoActivity = getArguments().getBoolean("IsEditInfoActivity", false);
+            isEditInfoActivity = getArguments().getBoolean("IsEditInfoActivity");
         else
             isEditInfoActivity = false;
+
+        init(view);
+        fragmentViewModel.init();
 
         if (isEditInfoActivity)
             displayEditInfo((User) getArguments().getSerializable("User"));
@@ -84,7 +85,11 @@ public class DataEntryFragment extends Fragment implements View.OnClickListener 
 
     private void init(View view) {
         editTextUserName = view.findViewById(R.id.edit_text_username);
+
         editTextContactNumber = view.findViewById(R.id.edit_text_contact_number);
+        editTextContactNumber2 = view.findViewById(R.id.edit_text_contact_number2);
+        editTextContactNumber3 = view.findViewById(R.id.edit_text_contact_number3);
+
         textViewDatePicker = view.findViewById(R.id.text_view_date_picker);
         buttonSave = view.findViewById(R.id.button_save);
         buttonSelectProfilePic = view.findViewById(R.id.button_select_profile_pic);
@@ -94,6 +99,13 @@ public class DataEntryFragment extends Fragment implements View.OnClickListener 
         textViewDatePicker.setOnClickListener(this);
         buttonSave.setOnClickListener(this);
         buttonSelectProfilePic.setOnClickListener(this);
+
+        editTextContactNumber.setOnClickListener(this);
+        editTextContactNumber2.setOnClickListener(this);
+
+
+        if (isEditInfoActivity)
+            imageViewProfilePic.setOnClickListener(this);
 
     }
 
@@ -108,6 +120,15 @@ public class DataEntryFragment extends Fragment implements View.OnClickListener 
                 break;
             case R.id.text_view_date_picker:
                 buttonDatePickerClicked();
+                break;
+            case R.id.image_view_profile_pic:
+                showProfilePic();
+                break;
+            case R.id.edit_text_contact_number:
+                editContactClicked();
+                break;
+            case R.id.edit_text_contact_number2:
+                editContact2Clicked();
                 break;
         }
     }
@@ -208,14 +229,10 @@ public class DataEntryFragment extends Fragment implements View.OnClickListener 
                 case REQUEST_CODE_CAMERA:
                     Bitmap bitmapCameraImage = (Bitmap) data.getExtras().get("data");
                     Uri cameraImageUri = null;
-                    try {
-                        Log.d("TAG", "Inside try of onActivity result of DataEntryFragment");
-                        cameraImageUri = SaveBitmap.saveBitmapReturnUri(bitmapCameraImage);
-                        Log.d("TAG", "cameraUri: " + cameraImageUri.toString());
-                        Log.d("TAG", "cameraUri: " + cameraImageUri.getPath());
 
+                    try {
+                        cameraImageUri = SaveBitmap.saveBitmapReturnUri(bitmapCameraImage);
                     } catch (IOException e) {
-                        Log.d("TAG", "Inside catch: " + e.getMessage());
                         e.printStackTrace();
                     }
 
@@ -225,7 +242,6 @@ public class DataEntryFragment extends Fragment implements View.OnClickListener 
 
                 case REQUEST_CODE_GALLERY:
                     Uri selectedImageUri = data.getData();
-                    Log.d("TAG", "URi: " + selectedImageUri.getPath());
                     profilePicPath = selectedImageUri.toString();
 
                     updateProfilePic(selectedImageUri);
@@ -255,6 +271,8 @@ public class DataEntryFragment extends Fragment implements View.OnClickListener 
         String userName = editTextUserName.getText().toString();
         String contactNumber = editTextContactNumber.getText().toString();
 
+        contactNumber = formattedContactNumber(contactNumber);
+
         if (userName.equals("") || contactNumber.equals("")) {
             Toast.makeText(getContext(), "Please enter all the details", Toast.LENGTH_SHORT).show();
             return;
@@ -265,7 +283,7 @@ public class DataEntryFragment extends Fragment implements View.OnClickListener 
         String birthDate = birthDateString.substring(indexOfColon + 1);
 
         if (!isEditInfoActivity) {
-            user = new User(userName, contactNumber, profilePicPath, birthDate, new Date());
+            user = new User(userName, contactNumber, profilePicPath, birthDate, new Date(), System.currentTimeMillis());
             fragmentViewModel.addUser(user);
         } else {
             user.setName(userName);
@@ -306,5 +324,51 @@ public class DataEntryFragment extends Fragment implements View.OnClickListener 
 
         updateProfilePic(user.getProfilePic());
         this.user = user;
+    }
+
+    private void showProfilePic() {
+        Log.d("TAG", "showProfilePic called: " + user.getProfilePic());
+        Bundle bundle = new Bundle();
+        bundle.putString("ProfilePic", user.getProfilePic());
+
+        ProfilePicFragment profilePicFragment = new ProfilePicFragment();
+        profilePicFragment.setArguments(bundle);
+
+        getParentFragmentManager()
+                .beginTransaction()
+                .replace(R.id.fragment_frame_container, profilePicFragment)
+                .addToBackStack(null)
+                .commit();
+    }
+
+    private String formattedContactNumber(String contactNumber) {
+        if (contactNumber.length() < 8 || contactNumber.length() > 12 || !contactNumber.matches("[0-9]*"))
+            return contactNumber;
+
+        //US check
+        if (contactNumber.length() == 11 && contactNumber.charAt(0) == '1')
+            return "+" + contactNumber;
+
+        //UK check
+        if (contactNumber.length() == 12 && contactNumber.charAt(0) == '4' && contactNumber.charAt(1) == '4')
+            return "+" + contactNumber;
+
+        //India
+        if (contactNumber.length() == 12 && contactNumber.charAt(0) == '9' && contactNumber.charAt(1) == '1')
+            return "+" + contactNumber;
+
+        //Japan
+        if (contactNumber.length() == 12 && contactNumber.charAt(0) == '8' && contactNumber.charAt(1) == '1')
+            return "+" + contactNumber;
+
+        return contactNumber;
+    }
+
+    private void editContactClicked() {
+        editTextContactNumber2.setVisibility(View.VISIBLE);
+    }
+
+    private void editContact2Clicked() {
+        editTextContactNumber3.setVisibility(View.VISIBLE);
     }
 }

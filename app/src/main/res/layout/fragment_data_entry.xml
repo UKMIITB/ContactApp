@@ -1,88 +1,96 @@
-<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    android:layout_marginLeft="16dp"
-    android:layout_marginTop="16dp"
-    android:layout_marginRight="16dp">
+    android:layout_height="match_parent">
 
-    <EditText
-        android:id="@+id/edit_text_username"
+    <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:hint="@string/username"
-        app:layout_constraintLeft_toLeftOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
-
-    <EditText
-        android:id="@+id/edit_text_contact_number"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
+        android:layout_marginLeft="16dp"
         android:layout_marginTop="16dp"
-        android:digits="1234567890"
-        android:hint="@string/contact_number"
-        android:inputType="number|textNoSuggestions"
-        android:maxLength="10"
-        app:layout_constraintLeft_toLeftOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/edit_text_username" />
+        android:layout_marginRight="16dp"
+        android:orientation="vertical">
 
-    <TextView
-        android:id="@+id/text_view_date_picker"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="16dp"
-        android:backgroundTint="@color/purple_200"
-        android:drawableRight="@drawable/ic_baseline_calendar_today_24"
-        android:gravity="center"
-        android:text="Select Birthday   "
-        android:textSize="24sp"
-        app:layout_constraintLeft_toLeftOf="parent"
-        app:layout_constraintRight_toRightOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/edit_text_contact_number" />
+        <EditText
+            android:id="@+id/edit_text_username"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:hint="@string/username" />
 
-    <TextView
-        android:id="@+id/text_view_birthday"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="16dp"
-        android:gravity="center"
-        android:text="@string/birthday_selected"
-        android:textSize="20sp"
-        app:layout_constraintLeft_toLeftOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/text_view_date_picker" />
+        <EditText
+            android:id="@+id/edit_text_contact_number"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="16dp"
+            android:digits="+#*1234567890"
+            android:hint="@string/contact_number"
+            android:inputType="number|textNoSuggestions" />
 
-    <Button
-        android:id="@+id/button_select_profile_pic"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="16dp"
-        android:backgroundTint="@color/purple_500"
-        android:gravity="center"
-        android:text="@string/select_profile_pic"
-        app:layout_constraintLeft_toLeftOf="parent"
-        app:layout_constraintRight_toRightOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/text_view_birthday" />
+        <EditText
+            android:id="@+id/edit_text_contact_number2"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="16dp"
+            android:digits="+#*1234567890"
+            android:hint="@string/contact_number"
+            android:inputType="number|textNoSuggestions"
+            android:visibility="gone" />
 
-    <ImageView
-        android:id="@+id/image_view_profile_pic"
-        android:layout_width="match_parent"
-        android:layout_height="200dp"
-        android:src="@drawable/ic_baseline_person_24"
-        app:layout_constraintLeft_toLeftOf="parent"
-        app:layout_constraintRight_toRightOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/button_select_profile_pic" />
+        <EditText
+            android:id="@+id/edit_text_contact_number3"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="16dp"
+            android:digits="+#*1234567890"
+            android:hint="@string/contact_number"
+            android:inputType="number|textNoSuggestions"
+            android:visibility="gone" />
+
+        <TextView
+            android:id="@+id/text_view_date_picker"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:layout_marginTop="16dp"
+            android:backgroundTint="@color/purple_200"
+            android:text="Select Birthday "
+            android:textSize="24sp"
+            app:drawableRightCompat="@drawable/ic_baseline_calendar_today_24" />
+
+        <TextView
+            android:id="@+id/text_view_birthday"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="16dp"
+            android:gravity="center"
+            android:text="@string/birthday_selected"
+            android:textSize="20sp" />
+
+        <Button
+            android:id="@+id/button_select_profile_pic"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:layout_marginTop="16dp"
+            android:backgroundTint="@color/purple_500"
+            android:text="@string/select_profile_pic" />
+
+        <ImageView
+            android:id="@+id/image_view_profile_pic"
+            android:layout_width="match_parent"
+            android:layout_height="200dp"
+            android:src="@drawable/ic_baseline_person_24" />
 
 
-    <Button
-        android:id="@+id/button_save"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="16dp"
-        android:backgroundTint="@color/teal_700"
-        android:clickable="false"
-        android:gravity="center"
-        android:text="@string/save"
-        app:layout_constraintLeft_toLeftOf="parent"
-        app:layout_constraintRight_toRightOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/image_view_profile_pic" />
-</androidx.constraintlayout.widget.ConstraintLayout>
+        <Button
+            android:id="@+id/button_save"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="16dp"
+            android:backgroundTint="@color/teal_700"
+            android:clickable="false"
+            android:gravity="center"
+            android:text="@string/save" />
+    </LinearLayout>
+</ScrollView>
+

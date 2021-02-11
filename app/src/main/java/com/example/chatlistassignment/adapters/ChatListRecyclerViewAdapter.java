@@ -2,6 +2,7 @@ package com.example.chatlistassignment.adapters;
 
 import android.net.Uri;
 import android.util.Log;
+import android.util.Pair;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -17,6 +18,9 @@ import com.bumptech.glide.Glide;
 import com.example.chatlistassignment.ItemClickListener;
 import com.example.chatlistassignment.R;
 import com.example.chatlistassignment.model.User;
+import com.example.chatlistassignment.utils.DateUtils;
+
+import java.util.Date;
 
 public class ChatListRecyclerViewAdapter extends PagedListAdapter<User, ChatListRecyclerViewAdapter.ViewHolder> {
     ItemClickListener itemClickListener;
@@ -51,17 +55,15 @@ public class ChatListRecyclerViewAdapter extends PagedListAdapter<User, ChatList
         User user = getItem(position);
         holder.textViewName.setText(user.getName());
         holder.textViewNumber.setText(user.getContactNumber());
+        setUpHeaderData(user, holder.txtHeader,position);
 
-        if (user.getProfilePic() != null)
-        {
-            Log.e("TAG", "onBindViewHolder: Profiel Pic Path  -->>"+user.getProfilePic() );
+        if (user.getProfilePic() != null) {
+            Log.e("TAG", "onBindViewHolder: Profiel Pic Path  -->>" + user.getProfilePic());
             Glide.with(holder.imageViewProfilePic.getContext())
                     .load(Uri.parse(user.getProfilePic()))
                     .error(R.drawable.ic_baseline_person_24)
                     .into(holder.imageViewProfilePic);
-        }
-        else
-        {
+        } else {
             Glide.with(holder.imageViewProfilePic.getContext())
                     .load(R.drawable.ic_baseline_person_24)
                     .error(R.drawable.ic_baseline_person_24)
@@ -69,11 +71,37 @@ public class ChatListRecyclerViewAdapter extends PagedListAdapter<User, ChatList
         }
     }
 
+    private void setUpHeaderData(User user, TextView dateTextView, int position) {
+        if (user == null) {
+            return;
+        }
+        Pair<String, String> timeDateForCurrentUser = DateUtils.getHeaderDateAndTime(new Date(user.getCreationTime()));
+        if(position > 0){
+            User prevUser = getItem(position - 1);
+            if(prevUser != null){
+                Pair<String, String> timeDateForPrevUser = DateUtils.getHeaderDateAndTime(new Date(prevUser.getCreationTime()));
+                if(timeDateForCurrentUser.first.toLowerCase().trim().equals(timeDateForPrevUser.first.toLowerCase().trim())){
+                    dateTextView.setVisibility(View.GONE);
+                } else  {
+                    setHeaderDate(timeDateForCurrentUser.first,dateTextView);
+                }
+            } else {
+                setHeaderDate(timeDateForCurrentUser.first,dateTextView);
+            }
+        } else {
+            setHeaderDate(timeDateForCurrentUser.first,dateTextView);
+        }
+    }
+
+    private void setHeaderDate(String  date, TextView dateTextView){
+        dateTextView.setVisibility(View.VISIBLE);
+        dateTextView.setText(date);
+    }
 
     class ViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener, View.OnLongClickListener {
 
         ImageView imageViewProfilePic;
-        TextView textViewName, textViewNumber;
+        TextView textViewName, textViewNumber, txtHeader;
 
         public ViewHolder(@NonNull View itemView) {
             super(itemView);
@@ -81,6 +109,7 @@ public class ChatListRecyclerViewAdapter extends PagedListAdapter<User, ChatList
             imageViewProfilePic = itemView.findViewById(R.id.image_view_profile_pic);
             textViewName = itemView.findViewById(R.id.text_view_name);
             textViewNumber = itemView.findViewById(R.id.text_view_number);
+            txtHeader = itemView.findViewById(R.id.txtHeader);
 
             itemView.setOnClickListener(this);
 

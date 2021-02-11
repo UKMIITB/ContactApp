@@ -10,22 +10,20 @@ import android.util.Log;
 
 public class AndroidContactsChangeListener {
 
-    private final ContentResolver mContentReslover;
-    private final Context mContext;
+    private final ContentResolver mContentResolver;
     private static AndroidContactsChangeListener mInstance;
     private static IChangeListener mListener;
     private ContactsChangeObserver changeObserver;
 
     private final static long CHANGE_UPDATE_TIME = 2000;
-    private long mLastTimeChangeProcessed = 0l;
+    private long mLastTimeChangeProcessed = 0L;
 
     public interface IChangeListener {
         void onContactsChanged();
     }
 
     private AndroidContactsChangeListener(Context context) {
-        mContext = context;
-        mContentReslover = context.getContentResolver();
+        mContentResolver = context.getContentResolver();
     }
 
     public static AndroidContactsChangeListener getInstance(Context context) {
@@ -38,13 +36,13 @@ public class AndroidContactsChangeListener {
 
     public void startContactsObservation(IChangeListener iChangeListener) {
         changeObserver = new ContactsChangeObserver(new Handler(Looper.getMainLooper()));
-        mContentReslover.registerContentObserver(ContactsContract.CommonDataKinds.Phone.CONTENT_URI, true, changeObserver);
+        mContentResolver.registerContentObserver(ContactsContract.CommonDataKinds.Phone.CONTENT_URI, true, changeObserver);
         mListener = iChangeListener;
 
     }
 
     public void stopContactsObservation() {
-        mContentReslover.unregisterContentObserver(changeObserver);
+        mContentResolver.unregisterContentObserver(changeObserver);
         mListener = null;
     }
 
@@ -65,8 +63,8 @@ public class AndroidContactsChangeListener {
         @Override
         public void onChange(boolean selfChange) {
             super.onChange(selfChange);
-            long mLastTimeChangeOccured = System.currentTimeMillis();
-            if (mLastTimeChangeOccured - mLastTimeChangeProcessed > CHANGE_UPDATE_TIME) {
+            long mLastTimeChangeOccurred = System.currentTimeMillis();
+            if (mLastTimeChangeOccurred - mLastTimeChangeProcessed > CHANGE_UPDATE_TIME) {
                 notifyContactChanged();
                 Log.e("TAG", "onChange:Contacts Changed , now call sync  ----------->> ");
                 mLastTimeChangeProcessed = System.currentTimeMillis();

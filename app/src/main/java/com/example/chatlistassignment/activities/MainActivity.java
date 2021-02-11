@@ -3,10 +3,6 @@ package com.example.chatlistassignment.activities;
 import android.Manifest;
 import android.content.pm.PackageManager;
 import android.os.Bundle;
-import android.os.Handler;
-import android.os.Looper;
-import android.provider.ContactsContract;
-import android.util.Log;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
@@ -17,26 +13,16 @@ import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.app.ActivityCompat;
 import androidx.lifecycle.Observer;
-import androidx.lifecycle.ViewModel;
 import androidx.lifecycle.ViewModelProvider;
-import androidx.lifecycle.ViewModelProviders;
 import androidx.viewpager.widget.ViewPager;
 
 import com.example.chatlistassignment.R;
 import com.example.chatlistassignment.adapters.ViewPagerAdapter;
 import com.example.chatlistassignment.utils.AndroidContactsChangeListener;
-import com.example.chatlistassignment.utils.ContactsChangeObserver;
-import com.example.chatlistassignment.utils.SyncNativeContacts;
 import com.example.chatlistassignment.viewmodel.FragmentViewModel;
 import com.google.android.material.tabs.TabLayout;
 
-import io.reactivex.Completable;
-import io.reactivex.CompletableObserver;
-import io.reactivex.disposables.Disposable;
-import io.reactivex.functions.Action;
-import io.reactivex.schedulers.Schedulers;
-
-public class MainActivity extends AppCompatActivity   {
+public class MainActivity extends AppCompatActivity {
 
     ViewPager viewPager;
     TabLayout tabLayout;
@@ -48,7 +34,7 @@ public class MainActivity extends AppCompatActivity   {
     AndroidContactsChangeListener.IChangeListener contactChangeListener = new AndroidContactsChangeListener.IChangeListener() {
         @Override
         public void onContactsChanged() {
-            fragmentViewModel.completeContactSync();
+            syncContacts();
         }
     };
 
@@ -56,7 +42,7 @@ public class MainActivity extends AppCompatActivity   {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-        fragmentViewModel = ViewModelProviders.of(this).get(FragmentViewModel.class);
+        fragmentViewModel = new ViewModelProvider(this).get(FragmentViewModel.class);
         init();
     }
 
@@ -81,7 +67,7 @@ public class MainActivity extends AppCompatActivity   {
     private void checkPermissionSyncContacts() {
         if (ActivityCompat.checkSelfPermission(this, Manifest.permission.READ_CONTACTS) !=
                 PackageManager.PERMISSION_GRANTED)
-            requestPermissions(new String[]{Manifest.permission.READ_CONTACTS}, READ_CONTACT_REQUEST_CODE);
+            ActivityCompat.requestPermissions(this, new String[]{Manifest.permission.READ_CONTACTS}, READ_CONTACT_REQUEST_CODE);
         else
             syncContacts();
     }
@@ -92,6 +78,7 @@ public class MainActivity extends AppCompatActivity   {
 
     @Override
     public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
+        super.onRequestPermissionsResult(requestCode, permissions, grantResults);
         if (requestCode == READ_CONTACT_REQUEST_CODE) {
             if (grantResults[0] == PackageManager.PERMISSION_GRANTED)
                 syncContacts();
@@ -119,15 +106,12 @@ public class MainActivity extends AppCompatActivity   {
                 searchView.clearFocus();
 
                 FragmentViewModel.setQueryString(query);
-                Log.d("TAG", "Inside onQueryTextSubmit: " + query);
                 return false;
             }
 
             @Override
             public boolean onQueryTextChange(String newText) {
-
                 FragmentViewModel.setQueryString(newText);
-                Log.d("TAG", "Inside onQueryTextChange: " + newText);
                 return false;
             }
         });

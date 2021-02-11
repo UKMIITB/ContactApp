@@ -23,6 +23,7 @@ public class DateUtils {
 
     public static Pair<String, String> getHeaderDateAndTime(Date date) {
         DateTime dateTime = new DateTime(ofNullable(date).orElse(new Date()));
+
         if (dateTime.toLocalDate().equals(new LocalDate())) {
             return new Pair<>("Today", getFormattedDateForChatMessage(date));
         } else if (dateTime.toLocalDate().equals(new LocalDate().minusDays(1))) {

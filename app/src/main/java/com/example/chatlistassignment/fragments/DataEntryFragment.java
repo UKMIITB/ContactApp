@@ -9,7 +9,6 @@ import android.graphics.Bitmap;
 import android.net.Uri;
 import android.os.Bundle;
 import android.provider.MediaStore;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -23,7 +22,7 @@ import android.widget.Toast;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AlertDialog;
-import androidx.core.content.ContextCompat;
+import androidx.core.app.ActivityCompat;
 import androidx.fragment.app.Fragment;
 import androidx.lifecycle.ViewModelProvider;
 import androidx.viewpager.widget.ViewPager;
@@ -53,8 +52,8 @@ public class DataEntryFragment extends Fragment implements View.OnClickListener 
 
     boolean isEditInfoActivity;
 
-    private final int REQUEST_CODE_CAMERA = 0;
-    private final int REQUEST_CODE_GALLERY = 1;
+    private final int REQUEST_CODE_CAMERA = 100;
+    private final int REQUEST_CODE_GALLERY = 101;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -100,8 +99,10 @@ public class DataEntryFragment extends Fragment implements View.OnClickListener 
         buttonSave.setOnClickListener(this);
         buttonSelectProfilePic.setOnClickListener(this);
 
-        editTextContactNumber.setOnClickListener(this);
-        editTextContactNumber2.setOnClickListener(this);
+        if (!isEditInfoActivity) {
+            editTextContactNumber.setOnClickListener(this);
+            editTextContactNumber2.setOnClickListener(this);
+        }
 
 
         if (isEditInfoActivity)
@@ -162,7 +163,6 @@ public class DataEntryFragment extends Fragment implements View.OnClickListener 
                     checkPermissionAndStartCamera();
 
                 } else if (options[item].equals("Choose from Gallery")) {
-
                     checkPermissionAndOpenGallery();
 
                 } else
@@ -173,9 +173,9 @@ public class DataEntryFragment extends Fragment implements View.OnClickListener 
     }
 
     private void checkPermissionAndOpenGallery() {
-        if (ContextCompat.checkSelfPermission(getContext(), Manifest.permission.WRITE_EXTERNAL_STORAGE) !=
+        if (ActivityCompat.checkSelfPermission(getContext(), Manifest.permission.WRITE_EXTERNAL_STORAGE) !=
                 PackageManager.PERMISSION_GRANTED ||
-                ContextCompat.checkSelfPermission(getContext(), Manifest.permission.READ_EXTERNAL_STORAGE) !=
+                ActivityCompat.checkSelfPermission(getContext(), Manifest.permission.READ_EXTERNAL_STORAGE) !=
                         PackageManager.PERMISSION_GRANTED)
 
             requestPermissions(new String[]{Manifest.permission.WRITE_EXTERNAL_STORAGE,
@@ -196,9 +196,9 @@ public class DataEntryFragment extends Fragment implements View.OnClickListener 
     }
 
     private void checkPermissionAndStartCamera() {
-        if (ContextCompat.checkSelfPermission(getContext(), Manifest.permission.CAMERA) !=
+        if (ActivityCompat.checkSelfPermission(getContext(), Manifest.permission.CAMERA) !=
                 PackageManager.PERMISSION_GRANTED ||
-                ContextCompat.checkSelfPermission(getContext(), Manifest.permission.WRITE_EXTERNAL_STORAGE) !=
+                ActivityCompat.checkSelfPermission(getContext(), Manifest.permission.WRITE_EXTERNAL_STORAGE) !=
                         PackageManager.PERMISSION_GRANTED)
             requestPermissions(new String[]{Manifest.permission.CAMERA, Manifest.permission.WRITE_EXTERNAL_STORAGE},
                     REQUEST_CODE_CAMERA);
@@ -269,7 +269,10 @@ public class DataEntryFragment extends Fragment implements View.OnClickListener 
 
     private void saveButtonClicked() {
         String userName = editTextUserName.getText().toString();
+
         String contactNumber = editTextContactNumber.getText().toString();
+        String contactNumber2 = editTextContactNumber2.getText().toString();
+        String contactNumber3 = editTextContactNumber3.getText().toString();
 
         contactNumber = formattedContactNumber(contactNumber);
 
@@ -283,11 +286,15 @@ public class DataEntryFragment extends Fragment implements View.OnClickListener 
         String birthDate = birthDateString.substring(indexOfColon + 1);
 
         if (!isEditInfoActivity) {
-            user = new User(userName, contactNumber, profilePicPath, birthDate, new Date());
+            user = new User(userName, contactNumber, contactNumber2, contactNumber3, profilePicPath, birthDate, new Date());
             fragmentViewModel.addUser(user);
         } else {
             user.setName(userName);
+
             user.setContactNumber(contactNumber);
+            user.setContactNumber2(contactNumber2);
+            user.setContactNumber3(contactNumber3);
+
             user.setDateOfBirth(birthDate);
             user.setProfilePic(profilePicPath);
             fragmentViewModel.updateUser(user);
@@ -323,11 +330,16 @@ public class DataEntryFragment extends Fragment implements View.OnClickListener 
         textViewBirthday.setText(birthDate);
 
         updateProfilePic(user.getProfilePic());
+
+        editTextContactNumber2.setVisibility(View.VISIBLE);
+        editTextContactNumber3.setVisibility(View.VISIBLE);
+        editTextContactNumber2.setText(user.getContactNumber2());
+        editTextContactNumber3.setText(user.getContactNumber3());
+
         this.user = user;
     }
 
     private void showProfilePic() {
-        Log.d("TAG", "showProfilePic called: " + user.getProfilePic());
         Bundle bundle = new Bundle();
         bundle.putString("ProfilePic", user.getProfilePic());
 

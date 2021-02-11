@@ -1,7 +1,6 @@
 package com.example.chatlistassignment.activities;
 
 import android.os.Bundle;
-import android.util.Log;
 
 import androidx.appcompat.app.AppCompatActivity;
 

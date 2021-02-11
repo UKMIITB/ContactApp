@@ -19,6 +19,8 @@ public class User implements Serializable {
     private Integer _id;
     private String name;
     private String contactNumber;
+    private String contactNumber2;
+    private String contactNumber3;
     private String profilePic;
     private String dateOfBirth;
 
@@ -29,9 +31,11 @@ public class User implements Serializable {
         this._id = _id;
     }
 
-    public User(String name, String contactNumber, String profilePic, String dateOfBirth, Date date) {
+    public User(String name, String contactNumber, String contactNumber2, String contactNumber3, String profilePic, String dateOfBirth, Date date) {
         this.name = name;
         this.contactNumber = contactNumber;
+        this.contactNumber2 = contactNumber2;
+        this.contactNumber3 = contactNumber3;
         this.profilePic = profilePic;
         this.dateOfBirth = dateOfBirth;
         this.date = date;
@@ -83,6 +87,22 @@ public class User implements Serializable {
 
     public void setDate(Date date) {
         this.date = date;
+    }
+
+    public String getContactNumber2() {
+        return contactNumber2;
+    }
+
+    public void setContactNumber2(String contactNumber2) {
+        this.contactNumber2 = contactNumber2;
+    }
+
+    public String getContactNumber3() {
+        return contactNumber3;
+    }
+
+    public void setContactNumber3(String contactNumber3) {
+        this.contactNumber3 = contactNumber3;
     }
 
     @Override

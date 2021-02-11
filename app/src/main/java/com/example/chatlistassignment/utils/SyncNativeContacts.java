@@ -11,10 +11,7 @@ import com.example.chatlistassignment.repository.LocalRepository;
 import java.util.ArrayList;
 import java.util.List;
 
-import io.reactivex.CompletableObserver;
 import io.reactivex.Single;
-import io.reactivex.annotations.NonNull;
-import io.reactivex.disposables.Disposable;
 
 public class SyncNativeContacts {
 
@@ -28,77 +25,47 @@ public class SyncNativeContacts {
 
     private List<Contact> contactList = new ArrayList<>();
 
-    public void syncNativeContacts() {
-
-        getContactArrayList();
-
-        addContactListToDB();
-    }
-
-    private void addContactListToDB() {
-//        for (Contact eachContact : contactList) {
-//            localRepository.addContact(eachContact).subscribe();
-//        }
-        localRepository.addListOfContact(contactList)
-                .subscribe(new CompletableObserver() {
-                    @Override
-                    public void onSubscribe(@NonNull Disposable d) {
-                        Log.d("TAG", "Inside onSubscribe of addContactListDB in SyncNativeContacts");
-                    }
-
-                    @Override
-                    public void onComplete() {
-                        Log.d("TAG", "Inside onComplete of addContactListDB in SyncNativeContacts");
-                    }
-
-                    @Override
-                    public void onError(@NonNull Throwable e) {
-                        Log.d("TAG", "Inside onError of addContactListDB in SyncNativeContacts.: " + e.getMessage());
-                    }
-                });
-    }
-
     public Single<List<Contact>> getContactArrayList() {
-        return Single.fromCallable(() ->{
+        return Single.fromCallable(() -> {
 
 
-        int count = 0;
-        List<Contact> contactList = new ArrayList<>();
-        Cursor cursor = context.getContentResolver().query(ContactsContract.Contacts.CONTENT_URI,
-                null, null, null, null);
+            int count = 0;
+            List<Contact> contactList = new ArrayList<>();
+            Cursor cursor = context.getContentResolver().query(ContactsContract.Contacts.CONTENT_URI,
+                    null, null, null, null);
 
-        if ((cursor != null ? cursor.getCount() : 0) > 0) {
-            while (cursor != null && cursor.moveToNext()) {
+            if ((cursor != null ? cursor.getCount() : 0) > 0) {
+                while (cursor != null && cursor.moveToNext()) {
 
-                String id = cursor.getString(cursor.getColumnIndex(ContactsContract.Contacts._ID));
-                String name = cursor.getString(cursor.getColumnIndex(ContactsContract.Contacts.DISPLAY_NAME));
+                    String id = cursor.getString(cursor.getColumnIndex(ContactsContract.Contacts._ID));
+                    String name = cursor.getString(cursor.getColumnIndex(ContactsContract.Contacts.DISPLAY_NAME));
 
-                List<String> numberList = new ArrayList<>();
+                    List<String> numberList = new ArrayList<>();
 
-                if (cursor.getInt(cursor.getColumnIndex(ContactsContract.Contacts.HAS_PHONE_NUMBER)) > 0) {
-                    Cursor phoneCursor = context.getContentResolver().query(ContactsContract.CommonDataKinds.Phone.CONTENT_URI,
-                            null, ContactsContract.CommonDataKinds.Phone.CONTACT_ID + "=?",
-                            new String[]{id}, null);
-                    while (phoneCursor.moveToNext()) {
-                        String number = phoneCursor.getString(phoneCursor.getColumnIndex(ContactsContract.CommonDataKinds.Phone.NUMBER));
-                        numberList.add(number);
-                        Log.d("TAG", "Name is: " + name);
-                        Log.d("TAG", "Number is: " + number);
-                        count++;
+                    if (cursor.getInt(cursor.getColumnIndex(ContactsContract.Contacts.HAS_PHONE_NUMBER)) > 0) {
+                        Cursor phoneCursor = context.getContentResolver().query(ContactsContract.CommonDataKinds.Phone.CONTENT_URI,
+                                null, ContactsContract.CommonDataKinds.Phone.CONTACT_ID + "=?",
+                                new String[]{id}, null);
+                        while (phoneCursor.moveToNext()) {
+                            String number = phoneCursor.getString(phoneCursor.getColumnIndex(ContactsContract.CommonDataKinds.Phone.NUMBER));
+                            numberList.add(number);
+                            Log.d("TAG", "Name is: " + name);
+                            Log.d("TAG", "Number is: " + number);
+                            count++;
+                        }
+                        phoneCursor.close();
                     }
-                    phoneCursor.close();
+
+                    Contact contact = new Contact(id, name, numberList);
+                    contactList.add(contact);
                 }
-
-                Contact contact = new Contact(id, name, numberList);
-                contactList.add(contact);
             }
-        }
 
-        if (cursor != null)
-            cursor.close();
-        Log.d("TAG", "Total Count: " + count);
+            if (cursor != null)
+                cursor.close();
+            Log.d("TAG", "Total Count: " + count);
 
-        return contactList;
+            return contactList;
         });
     }
 }

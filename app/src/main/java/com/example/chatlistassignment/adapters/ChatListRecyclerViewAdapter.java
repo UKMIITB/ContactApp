@@ -1,7 +1,6 @@
 package com.example.chatlistassignment.adapters;
 
 import android.net.Uri;
-import android.util.Log;
 import android.util.Pair;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -53,10 +52,10 @@ public class ChatListRecyclerViewAdapter extends PagedListAdapter<User, ChatList
         User user = getItem(position);
         holder.textViewName.setText(user.getName());
         holder.textViewNumber.setText(user.getContactNumber());
+
         setUpHeaderData(user, holder.txtHeader, position);
 
         if (user.getProfilePic() != null) {
-            Log.e("TAG", "onBindViewHolder: Profiel Pic Path  -->>" + user.getProfilePic());
             Glide.with(holder.imageViewProfilePic.getContext())
                     .load(Uri.parse(user.getProfilePic()))
                     .error(R.drawable.ic_baseline_person_24)
@@ -117,14 +116,12 @@ public class ChatListRecyclerViewAdapter extends PagedListAdapter<User, ChatList
 
         @Override
         public void onClick(View view) {
-            Log.d("TAG", "onClick in adapter called: " + view.getId());
             if (itemClickListener != null)
                 itemClickListener.onItemClicked(view, getItem(getAdapterPosition()));
         }
 
         @Override
         public boolean onLongClick(View view) {
-            Log.d("TAG", "onLongClick boolean called: " + view.getId());
             if (itemClickListener != null)
                 itemClickListener.onItemLongClicked(view, getItem(getAdapterPosition()), getAdapterPosition());
 

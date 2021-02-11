@@ -2,7 +2,6 @@ package com.example.chatlistassignment.fragments;
 
 import android.content.Intent;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.MenuItem;
 import android.view.View;
@@ -12,7 +11,7 @@ import androidx.annotation.NonNull;
 import androidx.core.content.ContextCompat;
 import androidx.fragment.app.Fragment;
 import androidx.lifecycle.Observer;
-import androidx.lifecycle.ViewModelProviders;
+import androidx.lifecycle.ViewModelProvider;
 import androidx.paging.PagedList;
 import androidx.recyclerview.widget.ItemTouchHelper;
 import androidx.recyclerview.widget.LinearLayoutManager;
@@ -48,7 +47,7 @@ public class ChatListFragment extends Fragment implements ItemClickListener {
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        fragmentViewModel = ViewModelProviders.of(this).get(FragmentViewModel.class);
+        fragmentViewModel = new ViewModelProvider(this).get(FragmentViewModel.class);
         deleteUserList = new ArrayList<>();
         currentUserList = new ArrayList<>();
 
@@ -91,7 +90,6 @@ public class ChatListFragment extends Fragment implements ItemClickListener {
     }
 
     private void queryChatList(String query) {
-        Log.d("TAG", "Inside ChatListFragment queryChatList: " + query);
         query = "%" + query + "%";
 
         fragmentViewModel.queryInit(query);
@@ -109,7 +107,6 @@ public class ChatListFragment extends Fragment implements ItemClickListener {
         fragmentViewModel.userList.observe(getViewLifecycleOwner(), new Observer<PagedList<User>>() {
             @Override
             public void onChanged(PagedList<User> users) {
-//                currentUserList.clear();
                 currentUserList = users.snapshot();
                 chatListRecyclerViewAdapter.submitList(users);
             }
@@ -130,8 +127,6 @@ public class ChatListFragment extends Fragment implements ItemClickListener {
 
     @Override
     public void onItemClicked(View view, User user) {
-        Log.d("TAG", "itemclicked: multi" + multiSelectStatus);
-
         if (multiSelectStatus) {
             if (!deleteUserList.contains(user)) {
                 view.setBackgroundColor(ContextCompat.getColor(view.getContext(), R.color.grey));
@@ -139,6 +134,9 @@ public class ChatListFragment extends Fragment implements ItemClickListener {
             } else {
                 deleteUserList.remove(user);
                 view.setBackgroundColor(ContextCompat.getColor(view.getContext(), R.color.light_grey));
+
+                if (deleteUserList.size() == 0)
+                    fragmentViewModel.setIsMultiSelect(false);
             }
 
         } else {
@@ -151,11 +149,8 @@ public class ChatListFragment extends Fragment implements ItemClickListener {
 
     @Override
     public void onItemLongClicked(View view, User user, int index) {
-        Log.d("TAG", "index: " + index + "Name: " + user.getName());
-
         view.setBackgroundColor(ContextCompat.getColor(view.getContext(), R.color.grey));
         deleteUserList.add(user);
-        Log.d("TAG", "LongItemClick: " + index);
         fragmentViewModel.setIsMultiSelect(true);
     }
 
@@ -164,13 +159,10 @@ public class ChatListFragment extends Fragment implements ItemClickListener {
     public boolean onOptionsItemSelected(@NonNull MenuItem item) {
 
         if (item.getItemId() == R.id.multi_select_delete) {
-
             for (User user : deleteUserList) {
                 fragmentViewModel.deleteUser(user);
             }
-
             deleteUserList.clear();
-//            fragmentViewModel.setIsMultiSelect(false);
         }
         return super.onOptionsItemSelected(item);
     }

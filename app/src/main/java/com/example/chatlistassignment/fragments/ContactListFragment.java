@@ -1,6 +1,8 @@
 package com.example.chatlistassignment.fragments;
 
+import android.content.Intent;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -13,11 +15,13 @@ import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.chatlistassignment.R;
+import com.example.chatlistassignment.activities.ViewContactDetailActivity;
 import com.example.chatlistassignment.adapters.ContactListRecyclerviewAdapter;
+import com.example.chatlistassignment.interfaces.ContactItemClickListener;
 import com.example.chatlistassignment.model.Contact;
 import com.example.chatlistassignment.viewmodel.FragmentViewModel;
 
-public class ContactListFragment extends Fragment {
+public class ContactListFragment extends Fragment implements ContactItemClickListener {
 
     RecyclerView recyclerViewContactList;
     ContactListRecyclerviewAdapter recyclerviewAdapter;
@@ -52,7 +56,7 @@ public class ContactListFragment extends Fragment {
         recyclerViewContactList = view.findViewById(R.id.recyclerview_contact_list);
         layoutManager = new LinearLayoutManager(getContext());
 
-        recyclerviewAdapter = new ContactListRecyclerviewAdapter();
+        recyclerviewAdapter = new ContactListRecyclerviewAdapter(this);
 
         recyclerViewContactList.setLayoutManager(layoutManager);
         recyclerViewContactList.setAdapter(recyclerviewAdapter);
@@ -95,5 +99,21 @@ public class ContactListFragment extends Fragment {
         super.setMenuVisibility(menuVisible);
 
         isFragmentActive = menuVisible;
+        if (isFragmentActive && getActivity() != null)
+            getActivity().setTitle("Contact List [" + fragmentViewModel.getContactListSize() + "]");
+    }
+
+    @Override
+    public void onResume() {
+        super.onResume();
+        if (isFragmentActive && getActivity() != null)
+            getActivity().setTitle("Contact List [" + fragmentViewModel.getContactListSize() + "]");
+    }
+
+    @Override
+    public void onItemClicked(View view, Contact contact) {
+        Intent intentViewContactDetailActivity = new Intent(getActivity(), ViewContactDetailActivity.class);
+        intentViewContactDetailActivity.putExtra("Contact", contact);
+        startActivity(intentViewContactDetailActivity);
     }
 }

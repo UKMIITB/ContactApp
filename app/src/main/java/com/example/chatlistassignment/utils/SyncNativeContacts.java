@@ -23,13 +23,9 @@ public class SyncNativeContacts {
         localRepository = new LocalRepository(context);
     }
 
-    private List<Contact> contactList = new ArrayList<>();
-
     public Single<List<Contact>> getContactArrayList() {
         return Single.fromCallable(() -> {
 
-
-            int count = 0;
             List<Contact> contactList = new ArrayList<>();
             Cursor cursor = context.getContentResolver().query(ContactsContract.Contacts.CONTENT_URI,
                     null, null, null, null);
@@ -41,29 +37,31 @@ public class SyncNativeContacts {
                     String name = cursor.getString(cursor.getColumnIndex(ContactsContract.Contacts.DISPLAY_NAME));
 
                     List<String> numberList = new ArrayList<>();
+                    List<String> typeList = new ArrayList<>();
 
                     if (cursor.getInt(cursor.getColumnIndex(ContactsContract.Contacts.HAS_PHONE_NUMBER)) > 0) {
                         Cursor phoneCursor = context.getContentResolver().query(ContactsContract.CommonDataKinds.Phone.CONTENT_URI,
                                 null, ContactsContract.CommonDataKinds.Phone.CONTACT_ID + "=?",
                                 new String[]{id}, null);
                         while (phoneCursor.moveToNext()) {
+
                             String number = phoneCursor.getString(phoneCursor.getColumnIndex(ContactsContract.CommonDataKinds.Phone.NUMBER));
+                            String type = ContactType.getContactType(phoneCursor.getInt(phoneCursor.getColumnIndex(ContactsContract.CommonDataKinds.Phone.TYPE)));
+
                             numberList.add(number);
-                            Log.d("TAG", "Name is: " + name);
-                            Log.d("TAG", "Number is: " + number);
-                            count++;
+                            typeList.add(type);
+
                         }
                         phoneCursor.close();
                     }
 
-                    Contact contact = new Contact(id, name, numberList);
+                    Contact contact = new Contact(id, name, numberList, typeList);
                     contactList.add(contact);
                 }
             }
 
             if (cursor != null)
                 cursor.close();
-            Log.d("TAG", "Total Count: " + count);
 
             return contactList;
         });

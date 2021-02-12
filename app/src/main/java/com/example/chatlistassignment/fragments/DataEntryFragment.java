@@ -320,6 +320,9 @@ public class DataEntryFragment extends Fragment implements View.OnClickListener 
         textViewBirthday.setText(R.string.birthday_selected);
         imageViewProfilePic.setImageDrawable(null);
         imageViewProfilePic.setImageResource(R.drawable.ic_baseline_person_24);
+
+        editTextContactNumber2.setVisibility(View.GONE);
+        editTextContactNumber3.setVisibility(View.GONE);
     }
 
     private void displayEditInfo(User user) {
@@ -382,5 +385,13 @@ public class DataEntryFragment extends Fragment implements View.OnClickListener 
 
     private void editContact2Clicked() {
         editTextContactNumber3.setVisibility(View.VISIBLE);
+    }
+
+    @Override
+    public void setMenuVisibility(boolean menuVisible) {
+        super.setMenuVisibility(menuVisible);
+
+        if (menuVisible && getActivity() != null)
+            getActivity().setTitle("Data Entry");
     }
 }

@@ -11,6 +11,7 @@ import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.appcompat.widget.Toolbar;
 import androidx.core.app.ActivityCompat;
 import androidx.lifecycle.Observer;
 import androidx.lifecycle.ViewModelProvider;
@@ -30,6 +31,8 @@ public class MainActivity extends AppCompatActivity {
 
     private final int READ_CONTACT_REQUEST_CODE = 100;
     FragmentViewModel fragmentViewModel;
+
+    private Toolbar toolbar;
 
     AndroidContactsChangeListener.IChangeListener contactChangeListener = new AndroidContactsChangeListener.IChangeListener() {
         @Override
@@ -55,6 +58,7 @@ public class MainActivity extends AppCompatActivity {
     private void init() {
         viewPager = findViewById(R.id.view_pager);
         tabLayout = findViewById(R.id.tab_layout);
+        toolbar = findViewById(R.id.custom_toolbar);
 
         viewPagerAdapter = new ViewPagerAdapter(getSupportFragmentManager());
         viewPager.setAdapter(viewPagerAdapter);
@@ -102,7 +106,6 @@ public class MainActivity extends AppCompatActivity {
         searchView.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
             @Override
             public boolean onQueryTextSubmit(String query) {
-
                 searchView.clearFocus();
 
                 FragmentViewModel.setQueryString(query);
@@ -134,11 +137,9 @@ public class MainActivity extends AppCompatActivity {
         });
     }
 
-
     @Override
     protected void onDestroy() {
         super.onDestroy();
         AndroidContactsChangeListener.getInstance(this).stopContactsObservation();
     }
-
 }

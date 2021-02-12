@@ -54,4 +54,12 @@ public class ProfilePicFragment extends Fragment {
                     .centerCrop()
                     .into(imageViewProfilePic);
     }
+
+    @Override
+    public void setMenuVisibility(boolean menuVisible) {
+        super.setMenuVisibility(menuVisible);
+
+        if (menuVisible && getActivity() != null)
+            getActivity().setTitle("Profile Pic");
+    }
 }

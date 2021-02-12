@@ -13,9 +13,12 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.bumptech.glide.Glide;
 import com.example.chatlistassignment.R;
+import com.example.chatlistassignment.interfaces.ContactItemClickListener;
 import com.example.chatlistassignment.model.Contact;
 
 public class ContactListRecyclerviewAdapter extends PagedListAdapter<Contact, ContactListRecyclerviewAdapter.ViewHolder> {
+
+    ContactItemClickListener itemClickListener;
 
     public static DiffUtil.ItemCallback<Contact> DIFF_CALLBACK = new DiffUtil.ItemCallback<Contact>() {
         @Override
@@ -29,8 +32,9 @@ public class ContactListRecyclerviewAdapter extends PagedListAdapter<Contact, Co
         }
     };
 
-    public ContactListRecyclerviewAdapter() {
+    public ContactListRecyclerviewAdapter(ContactItemClickListener itemClickListener) {
         super(DIFF_CALLBACK);
+        this.itemClickListener = itemClickListener;
     }
 
     @NonNull
@@ -53,7 +57,7 @@ public class ContactListRecyclerviewAdapter extends PagedListAdapter<Contact, Co
     }
 
 
-    class ViewHolder extends RecyclerView.ViewHolder {
+    class ViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener {
 
         TextView textViewName, textViewNumber;
         ImageView imageViewProfilePic;
@@ -63,6 +67,14 @@ public class ContactListRecyclerviewAdapter extends PagedListAdapter<Contact, Co
             imageViewProfilePic = itemView.findViewById(R.id.image_view_profile_pic);
             textViewName = itemView.findViewById(R.id.text_view_name);
             textViewNumber = itemView.findViewById(R.id.text_view_number);
+
+            itemView.setOnClickListener(this);
+        }
+
+        @Override
+        public void onClick(View view) {
+            if (itemClickListener != null)
+                itemClickListener.onItemClicked(view, getItem(getAdapterPosition()));
         }
     }
 }

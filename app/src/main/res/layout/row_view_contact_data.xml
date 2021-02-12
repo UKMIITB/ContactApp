@@ -1,0 +1,26 @@
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:layout_marginTop="8dp"
+    android:layout_weight="1"
+    android:orientation="horizontal">
+
+    <TextView
+        android:id="@+id/text_view_contact_type"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginLeft="8dp"
+        android:layout_weight="0.4"
+        android:ellipsize="end"
+        android:maxLines="1"
+        android:text="Home"
+        android:textSize="20sp" />
+
+    <TextView
+        android:id="@+id/text_view_contact_number"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_weight="0.6"
+        android:text="+918409198073"
+        android:textSize="20sp" />
+</LinearLayout>

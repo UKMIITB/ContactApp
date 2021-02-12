@@ -1,7 +1,8 @@
-package com.example.chatlistassignment;
+package com.example.chatlistassignment.interfaces;
 
 import android.view.View;
 
+import com.example.chatlistassignment.model.Contact;
 import com.example.chatlistassignment.model.User;
 
 public interface ItemClickListener {

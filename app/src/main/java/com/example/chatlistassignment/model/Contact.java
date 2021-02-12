@@ -22,10 +22,14 @@ public class Contact implements Serializable {
     @TypeConverters(ListConverter.class)
     private List<String> number;
 
-    public Contact(@NonNull String _id, String name, List<String> number) {
+    @TypeConverters(ListConverter.class)
+    private List<String> numberType;
+
+    public Contact(@NonNull String _id, String name, List<String> number, List<String> numberType) {
         this._id = _id;
         this.name = name;
         this.number = number;
+        this.numberType = numberType;
     }
 
     public Contact() {
@@ -54,6 +58,14 @@ public class Contact implements Serializable {
 
     public void setNumber(List<String> number) {
         this.number = number;
+    }
+
+    public List<String> getNumberType() {
+        return numberType;
+    }
+
+    public void setNumberType(List<String> numberType) {
+        this.numberType = numberType;
     }
 
     @Override

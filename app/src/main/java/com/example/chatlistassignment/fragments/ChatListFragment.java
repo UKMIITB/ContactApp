@@ -17,7 +17,7 @@ import androidx.recyclerview.widget.ItemTouchHelper;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
-import com.example.chatlistassignment.ItemClickListener;
+import com.example.chatlistassignment.interfaces.ItemClickListener;
 import com.example.chatlistassignment.R;
 import com.example.chatlistassignment.activities.EditUserInfoActivity;
 import com.example.chatlistassignment.adapters.ChatListRecyclerViewAdapter;
@@ -185,5 +185,8 @@ public class ChatListFragment extends Fragment implements ItemClickListener {
         super.setMenuVisibility(menuVisible);
 
         isFragmentActive = menuVisible;
+
+        if (menuVisible && getActivity() != null)
+            getActivity().setTitle("Chat List");
     }
 }

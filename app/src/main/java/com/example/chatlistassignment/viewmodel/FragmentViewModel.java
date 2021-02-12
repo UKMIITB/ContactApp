@@ -245,6 +245,16 @@ public class FragmentViewModel extends AndroidViewModel {
         compositeDisposable.dispose();
     }
 
+    private static int contactListSize = 0;
+
+    public void setContactListSize(int size) {
+        contactListSize = size;
+    }
+
+    public int getContactListSize() {
+        return contactListSize;
+    }
+
     public void completeContactSync() {
         syncNativeContacts = new SyncNativeContacts(getApplication());
         syncNativeContacts.getContactArrayList().doAfterSuccess(this::addContactListToDB)
@@ -258,6 +268,7 @@ public class FragmentViewModel extends AndroidViewModel {
                     @Override
                     public void onSuccess(@io.reactivex.annotations.NonNull List<Contact> contactList) {
                         Log.e(TAG, "onSuccess: Inside complete sync   -->>  " + contactList.size());
+                        setContactListSize(contactList.size());
                     }
 
                     @Override

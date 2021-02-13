@@ -1,6 +1,7 @@
 package com.example.chatlistassignment.adapters;
 
 import android.net.Uri;
+import android.util.Log;
 import android.util.Pair;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -73,6 +74,8 @@ public class ChatListRecyclerViewAdapter extends PagedListAdapter<User, ChatList
             return;
         }
         Pair<String, String> timeDateForCurrentUser = DateUtils.getHeaderDateAndTime(user.getDate());
+        Log.d("TAG", "setUpHeaderData: "+timeDateForCurrentUser.first);
+        Log.d("TAG", "setUpHeaderData: "+timeDateForCurrentUser.second);
         if (position > 0) {
             User prevUser = getItem(position - 1);
             if (prevUser != null) {

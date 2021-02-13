@@ -2,7 +2,6 @@ package com.example.chatlistassignment.adapters;
 
 import android.net.Uri;
 import android.util.Log;
-import android.util.Pair;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -15,10 +14,10 @@ import androidx.recyclerview.widget.DiffUtil;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.bumptech.glide.Glide;
-import com.example.chatlistassignment.interfaces.ItemClickListener;
 import com.example.chatlistassignment.R;
+import com.example.chatlistassignment.interfaces.ItemClickListener;
 import com.example.chatlistassignment.model.User;
-import com.example.chatlistassignment.utils.DateUtils;
+import com.example.chatlistassignment.utils.ChatDateHeader;
 
 public class ChatListRecyclerViewAdapter extends PagedListAdapter<User, ChatListRecyclerViewAdapter.ViewHolder> {
     ItemClickListener itemClickListener;
@@ -54,7 +53,7 @@ public class ChatListRecyclerViewAdapter extends PagedListAdapter<User, ChatList
         holder.textViewName.setText(user.getName());
         holder.textViewNumber.setText(user.getContactNumber());
 
-        setUpHeaderData(user, holder.txtHeader, position);
+        setUpHeaderData(user, holder.textViewHeader, position);
 
         if (user.getProfilePic() != null) {
             Glide.with(holder.imageViewProfilePic.getContext())
@@ -69,28 +68,29 @@ public class ChatListRecyclerViewAdapter extends PagedListAdapter<User, ChatList
         }
     }
 
-    private void setUpHeaderData(User user, TextView dateTextView, int position) {
-        if (user == null) {
+    private void setUpHeaderData(User user, TextView textViewHeader, int position) {
+        Log.d("TAG", "setUpHeaderData position: " + position);
+        if (user == null)
             return;
-        }
-        Pair<String, String> timeDateForCurrentUser = DateUtils.getHeaderDateAndTime(user.getDate());
-        Log.d("TAG", "setUpHeaderData: "+timeDateForCurrentUser.first);
-        Log.d("TAG", "setUpHeaderData: "+timeDateForCurrentUser.second);
+
+        String currentUserDateHeader = ChatDateHeader.getChatDateHeader(user.getDate());
         if (position > 0) {
+
             User prevUser = getItem(position - 1);
+
             if (prevUser != null) {
-                Pair<String, String> timeDateForPrevUser = DateUtils.getHeaderDateAndTime(prevUser.getDate());
-                if (timeDateForCurrentUser.first.toLowerCase().trim().equals(timeDateForPrevUser.first.toLowerCase().trim())) {
-                    dateTextView.setVisibility(View.GONE);
-                } else {
-                    setHeaderDate(timeDateForCurrentUser.first, dateTextView);
-                }
-            } else {
-                setHeaderDate(timeDateForCurrentUser.first, dateTextView);
-            }
-        } else {
-            setHeaderDate(timeDateForCurrentUser.first, dateTextView);
-        }
+
+                String prevUserDateHeader = ChatDateHeader.getChatDateHeader(prevUser.getDate());
+                if (currentUserDateHeader.equals(prevUserDateHeader))
+                    textViewHeader.setVisibility(View.GONE);
+                else
+                    setHeaderDate(currentUserDateHeader, textViewHeader);
+
+            } else
+                setHeaderDate(currentUserDateHeader, textViewHeader);
+
+        } else
+            setHeaderDate(currentUserDateHeader, textViewHeader);
     }
 
     private void setHeaderDate(String date, TextView dateTextView) {
@@ -101,7 +101,7 @@ public class ChatListRecyclerViewAdapter extends PagedListAdapter<User, ChatList
     class ViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener, View.OnLongClickListener {
 
         ImageView imageViewProfilePic;
-        TextView textViewName, textViewNumber, txtHeader;
+        TextView textViewName, textViewNumber, textViewHeader;
 
         public ViewHolder(@NonNull View itemView) {
             super(itemView);
@@ -109,7 +109,7 @@ public class ChatListRecyclerViewAdapter extends PagedListAdapter<User, ChatList
             imageViewProfilePic = itemView.findViewById(R.id.image_view_profile_pic);
             textViewName = itemView.findViewById(R.id.text_view_name);
             textViewNumber = itemView.findViewById(R.id.text_view_number);
-            txtHeader = itemView.findViewById(R.id.txtHeader);
+            textViewHeader = itemView.findViewById(R.id.text_view_header);
 
             itemView.setOnClickListener(this);
 

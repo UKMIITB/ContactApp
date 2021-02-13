@@ -17,10 +17,10 @@ import androidx.recyclerview.widget.ItemTouchHelper;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
-import com.example.chatlistassignment.interfaces.ItemClickListener;
 import com.example.chatlistassignment.R;
 import com.example.chatlistassignment.activities.EditUserInfoActivity;
 import com.example.chatlistassignment.adapters.ChatListRecyclerViewAdapter;
+import com.example.chatlistassignment.interfaces.ItemClickListener;
 import com.example.chatlistassignment.model.User;
 import com.example.chatlistassignment.viewmodel.FragmentViewModel;
 
@@ -43,6 +43,8 @@ public class ChatListFragment extends Fragment implements ItemClickListener {
 
     boolean isFragmentActive = false;
 
+    private final String TAG = "TAG";
+
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -64,7 +66,7 @@ public class ChatListFragment extends Fragment implements ItemClickListener {
         observeForDbChanges();
         observeQueryString();
         observeMultiSelectStatus();
-
+        observeRecyclerViewPosition();
         return view;
     }
 
@@ -112,6 +114,24 @@ public class ChatListFragment extends Fragment implements ItemClickListener {
             }
         });
 
+    }
+
+    private void observeRecyclerViewPosition() {
+        chatListRecyclerViewAdapter.registerAdapterDataObserver(new RecyclerView.AdapterDataObserver() {
+
+            @Override
+            public void onItemRangeInserted(int positionStart, int itemCount) {
+                recyclerViewChatList.scrollToPosition(positionStart);
+                super.onItemRangeInserted(positionStart, itemCount);
+                chatListRecyclerViewAdapter.notifyDataSetChanged();
+            }
+
+            @Override
+            public void onItemRangeRemoved(int positionStart, int itemCount) {
+                super.onItemRangeRemoved(positionStart, itemCount);
+                chatListRecyclerViewAdapter.notifyDataSetChanged();
+            }
+        });
     }
 
     private void init(View view) {

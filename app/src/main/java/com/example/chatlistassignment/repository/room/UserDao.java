@@ -21,13 +21,13 @@ public interface UserDao {
     @Delete
     Completable deleteUser(User user);
 
-    @Query("select * from userdb")
+    @Query("select * from userdb order by date desc")
     DataSource.Factory<Integer, User> getAllUser();
 
     @Update
     Completable updateUser(User user);
 
-    @Query("select * from userdb where name like :query or contactNumber like :query")
+    @Query("select * from userdb where name like :query or contactNumber like :query order by date desc")
     DataSource.Factory<Integer, User> queryAllUser(String query);
 
     @Delete

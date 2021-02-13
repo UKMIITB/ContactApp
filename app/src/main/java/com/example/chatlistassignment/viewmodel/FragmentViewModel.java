@@ -25,7 +25,6 @@ import java.util.List;
 import io.reactivex.CompletableObserver;
 import io.reactivex.SingleObserver;
 import io.reactivex.android.schedulers.AndroidSchedulers;
-import io.reactivex.disposables.CompositeDisposable;
 import io.reactivex.disposables.Disposable;
 import io.reactivex.schedulers.Schedulers;
 
@@ -35,7 +34,7 @@ public class FragmentViewModel extends AndroidViewModel {
     public final static String TAG = "TAG";
     public LiveData<PagedList<User>> userList;
     private LocalRepository repository;
-    private CompositeDisposable compositeDisposable = new CompositeDisposable();
+//    private CompositeDisposable compositeDisposable = new CompositeDisposable();
 
     public LiveData<PagedList<User>> queriedUserList;
 
@@ -242,7 +241,7 @@ public class FragmentViewModel extends AndroidViewModel {
     @Override
     protected void onCleared() {
         super.onCleared();
-        compositeDisposable.dispose();
+//        compositeDisposable.dispose();
     }
 
     private static int contactListSize = 0;

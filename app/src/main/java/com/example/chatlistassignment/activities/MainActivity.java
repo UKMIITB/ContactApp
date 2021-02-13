@@ -3,6 +3,10 @@ package com.example.chatlistassignment.activities;
 import android.Manifest;
 import android.content.pm.PackageManager;
 import android.os.Bundle;
+import android.os.Handler;
+import android.os.Looper;
+import android.provider.ContactsContract;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
@@ -11,7 +15,6 @@ import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
-import androidx.appcompat.widget.Toolbar;
 import androidx.core.app.ActivityCompat;
 import androidx.lifecycle.Observer;
 import androidx.lifecycle.ViewModelProvider;
@@ -19,7 +22,7 @@ import androidx.viewpager.widget.ViewPager;
 
 import com.example.chatlistassignment.R;
 import com.example.chatlistassignment.adapters.ViewPagerAdapter;
-import com.example.chatlistassignment.utils.AndroidContactsChangeListener;
+import com.example.chatlistassignment.utils.ContactsChangeListener;
 import com.example.chatlistassignment.viewmodel.FragmentViewModel;
 import com.google.android.material.tabs.TabLayout;
 
@@ -32,33 +35,44 @@ public class MainActivity extends AppCompatActivity {
     private final int READ_CONTACT_REQUEST_CODE = 100;
     FragmentViewModel fragmentViewModel;
 
-    private Toolbar toolbar;
+//    AndroidContactsChangeListener.IChangeListener contactChangeListener = new AndroidContactsChangeListener.IChangeListener() {
+//        @Override
+//        public void onContactsChanged() {
+//            syncContacts();
+//        }
+//    };
 
-    AndroidContactsChangeListener.IChangeListener contactChangeListener = new AndroidContactsChangeListener.IChangeListener() {
-        @Override
-        public void onContactsChanged() {
-            syncContacts();
-        }
-    };
+    ContactsChangeListener contactsChangeListener;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
         fragmentViewModel = new ViewModelProvider(this).get(FragmentViewModel.class);
+
+        contactsChangeListener = new ContactsChangeListener(new Handler(Looper.getMainLooper())) {
+            @Override
+            public void onChange(boolean selfChange) {
+                super.onChange(selfChange);
+                Log.d("TAG", "onChange in main activity called: ");
+                syncContacts();
+            }
+        };
         init();
     }
 
     @Override
     protected void onResume() {
         super.onResume();
-        AndroidContactsChangeListener.getInstance(this).startContactsObservation(contactChangeListener);
+//        AndroidContactsChangeListener.getInstance(this).startContactsObservation(contactChangeListener);
+
+        getContentResolver().registerContentObserver(ContactsContract.Contacts.CONTENT_URI, true, contactsChangeListener);
     }
 
     private void init() {
         viewPager = findViewById(R.id.view_pager);
         tabLayout = findViewById(R.id.tab_layout);
-        toolbar = findViewById(R.id.custom_toolbar);
 
         viewPagerAdapter = new ViewPagerAdapter(getSupportFragmentManager());
         viewPager.setAdapter(viewPagerAdapter);
@@ -140,6 +154,6 @@ public class MainActivity extends AppCompatActivity {
     @Override
     protected void onDestroy() {
         super.onDestroy();
-        AndroidContactsChangeListener.getInstance(this).stopContactsObservation();
+        getContentResolver().unregisterContentObserver(contactsChangeListener);
     }
 }

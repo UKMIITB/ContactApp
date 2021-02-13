@@ -35,13 +35,6 @@ public class MainActivity extends AppCompatActivity {
     private final int READ_CONTACT_REQUEST_CODE = 100;
     FragmentViewModel fragmentViewModel;
 
-//    AndroidContactsChangeListener.IChangeListener contactChangeListener = new AndroidContactsChangeListener.IChangeListener() {
-//        @Override
-//        public void onContactsChanged() {
-//            syncContacts();
-//        }
-//    };
-
     ContactsChangeListener contactsChangeListener;
 
 
@@ -55,7 +48,6 @@ public class MainActivity extends AppCompatActivity {
             @Override
             public void onChange(boolean selfChange) {
                 super.onChange(selfChange);
-                Log.d("TAG", "onChange in main activity called: ");
                 syncContacts();
             }
         };
@@ -65,8 +57,6 @@ public class MainActivity extends AppCompatActivity {
     @Override
     protected void onResume() {
         super.onResume();
-//        AndroidContactsChangeListener.getInstance(this).startContactsObservation(contactChangeListener);
-
         getContentResolver().registerContentObserver(ContactsContract.Contacts.CONTENT_URI, true, contactsChangeListener);
     }
 

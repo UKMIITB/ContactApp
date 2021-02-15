@@ -8,6 +8,9 @@ import com.example.chatlistassignment.R;
 import com.example.chatlistassignment.fragments.DataEntryFragment;
 import com.example.chatlistassignment.model.User;
 
+import dagger.hilt.android.AndroidEntryPoint;
+
+@AndroidEntryPoint
 public class EditUserInfoActivity extends AppCompatActivity {
 
     User user;

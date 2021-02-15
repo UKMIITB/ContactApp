@@ -1,16 +1,15 @@
 package com.example.chatlistassignment.repository;
 
-import android.content.Context;
-
 import androidx.paging.DataSource;
 
 import com.example.chatlistassignment.model.Contact;
 import com.example.chatlistassignment.model.User;
 import com.example.chatlistassignment.repository.room.ContactDao;
-import com.example.chatlistassignment.repository.room.Database;
 import com.example.chatlistassignment.repository.room.UserDao;
 
 import java.util.List;
+
+import javax.inject.Inject;
 
 import io.reactivex.Completable;
 
@@ -19,9 +18,10 @@ public class LocalRepository {
     private UserDao userDao;
     private ContactDao contactDao;
 
-    public LocalRepository(Context context) {
-        userDao = Database.getInstance(context).userDao();
-        contactDao = Database.getInstance(context).contactDao();
+    @Inject
+    public LocalRepository(UserDao userDao, ContactDao contactDao) {
+        this.userDao = userDao;
+        this.contactDao = contactDao;
     }
 
 

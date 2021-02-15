@@ -27,7 +27,9 @@ import com.example.chatlistassignment.viewmodel.FragmentViewModel;
 import java.util.ArrayList;
 import java.util.List;
 
+import dagger.hilt.android.AndroidEntryPoint;
 
+@AndroidEntryPoint
 public class ChatListFragment extends Fragment implements ItemClickListener {
 
     RecyclerView recyclerViewChatList;

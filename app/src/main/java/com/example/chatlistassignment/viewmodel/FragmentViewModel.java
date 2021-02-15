@@ -22,19 +22,21 @@ import com.example.chatlistassignment.utils.SyncNativeContacts;
 
 import java.util.List;
 
+import javax.inject.Inject;
+
+import dagger.hilt.android.lifecycle.HiltViewModel;
 import io.reactivex.CompletableObserver;
 import io.reactivex.SingleObserver;
 import io.reactivex.android.schedulers.AndroidSchedulers;
 import io.reactivex.disposables.Disposable;
 import io.reactivex.schedulers.Schedulers;
 
-
+@HiltViewModel
 public class FragmentViewModel extends AndroidViewModel {
 
     public final static String TAG = "TAG";
     public LiveData<PagedList<User>> userList;
     private LocalRepository repository;
-//    private CompositeDisposable compositeDisposable = new CompositeDisposable();
 
     public LiveData<PagedList<User>> queriedUserList;
 
@@ -43,9 +45,10 @@ public class FragmentViewModel extends AndroidViewModel {
 
     SyncNativeContacts syncNativeContacts;
 
-    public FragmentViewModel(@NonNull Application application) {
+    @Inject
+    public FragmentViewModel(@NonNull Application application, LocalRepository repository) {
         super(application);
-        repository = new LocalRepository(getApplication());
+        this.repository = repository;
     }
 
     public void init() {
@@ -74,7 +77,6 @@ public class FragmentViewModel extends AndroidViewModel {
     }
 
     public void queryContactInit(String query) {
-        repository = new LocalRepository(getApplication());
 
         PagedList.Config config = (new PagedList.Config.Builder()).setEnablePlaceholders(false)
                 .setInitialLoadSizeHint(10)
@@ -241,7 +243,6 @@ public class FragmentViewModel extends AndroidViewModel {
     @Override
     protected void onCleared() {
         super.onCleared();
-//        compositeDisposable.dispose();
     }
 
     private static int contactListSize = 0;

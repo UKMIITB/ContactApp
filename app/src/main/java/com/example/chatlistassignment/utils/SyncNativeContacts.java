@@ -3,10 +3,8 @@ package com.example.chatlistassignment.utils;
 import android.content.Context;
 import android.database.Cursor;
 import android.provider.ContactsContract;
-import android.util.Log;
 
 import com.example.chatlistassignment.model.Contact;
-import com.example.chatlistassignment.repository.LocalRepository;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -16,11 +14,9 @@ import io.reactivex.Single;
 public class SyncNativeContacts {
 
     Context context;
-    LocalRepository localRepository;
 
     public SyncNativeContacts(Context context) {
         this.context = context;
-        localRepository = new LocalRepository(context);
     }
 
     public Single<List<Contact>> getContactArrayList() {

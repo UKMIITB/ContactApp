@@ -11,6 +11,9 @@ import com.example.chatlistassignment.R;
 import com.example.chatlistassignment.adapters.ViewContactRecyclerViewAdapter;
 import com.example.chatlistassignment.model.Contact;
 
+import dagger.hilt.android.AndroidEntryPoint;
+
+@AndroidEntryPoint
 public class ViewContactDetailActivity extends AppCompatActivity {
 
     TextView textViewName;

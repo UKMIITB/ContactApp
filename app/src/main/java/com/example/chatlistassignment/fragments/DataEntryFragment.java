@@ -37,8 +37,11 @@ import java.io.IOException;
 import java.util.Calendar;
 import java.util.Date;
 
+import dagger.hilt.android.AndroidEntryPoint;
+
 import static android.app.Activity.RESULT_CANCELED;
 
+@AndroidEntryPoint
 public class DataEntryFragment extends Fragment implements View.OnClickListener {
 
     EditText editTextUserName, editTextContactNumber, editTextContactNumber2, editTextContactNumber3;

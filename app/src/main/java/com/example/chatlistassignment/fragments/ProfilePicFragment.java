@@ -12,6 +12,9 @@ import androidx.fragment.app.Fragment;
 import com.bumptech.glide.Glide;
 import com.example.chatlistassignment.R;
 
+import dagger.hilt.android.AndroidEntryPoint;
+
+@AndroidEntryPoint
 public class ProfilePicFragment extends Fragment {
 
     ImageView imageViewProfilePic;

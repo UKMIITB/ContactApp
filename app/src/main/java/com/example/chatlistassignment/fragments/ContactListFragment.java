@@ -2,7 +2,6 @@ package com.example.chatlistassignment.fragments;
 
 import android.content.Intent;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -21,6 +20,9 @@ import com.example.chatlistassignment.interfaces.ContactItemClickListener;
 import com.example.chatlistassignment.model.Contact;
 import com.example.chatlistassignment.viewmodel.FragmentViewModel;
 
+import dagger.hilt.android.AndroidEntryPoint;
+
+@AndroidEntryPoint
 public class ContactListFragment extends Fragment implements ContactItemClickListener {
 
     RecyclerView recyclerViewContactList;

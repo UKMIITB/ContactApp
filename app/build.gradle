@@ -22,9 +22,9 @@ android {
         javaCompileOptions {
             annotationProcessorOptions {
                 arguments += [
-                        "room.schemaLocation":"$projectDir/schemas".toString(),
-                        "room.incremental":"true",
-                        "room.expandProjection":"true"]
+                        "room.schemaLocation"  : "$projectDir/schemas".toString(),
+                        "room.incremental"     : "true",
+                        "room.expandProjection": "true"]
             }
         }
     }
@@ -40,7 +40,9 @@ android {
         targetCompatibility JavaVersion.VERSION_1_8
     }
 
-
+    dataBinding {
+        enabled = true
+    }
 }
 
 dependencies {
@@ -94,9 +96,9 @@ dependencies {
     implementation "com.google.dagger:hilt-android:2.31.2-alpha"
     kapt "com.google.dagger:hilt-android-compiler:2.31.2-alpha"
 
-    implementation "androidx.activity:activity-ktx:1.1.0"
+    implementation "androidx.activity:activity-ktx:1.2.0"
 
     // Architectural Components
-    implementation "androidx.lifecycle:lifecycle-viewmodel-ktx:2.2.0"
+    implementation "androidx.lifecycle:lifecycle-viewmodel-ktx:2.3.0"
 
 }

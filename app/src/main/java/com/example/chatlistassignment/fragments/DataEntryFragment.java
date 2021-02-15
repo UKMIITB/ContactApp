@@ -23,12 +23,14 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AlertDialog;
 import androidx.core.app.ActivityCompat;
+import androidx.databinding.DataBindingUtil;
 import androidx.fragment.app.Fragment;
 import androidx.lifecycle.ViewModelProvider;
 import androidx.viewpager.widget.ViewPager;
 
 import com.bumptech.glide.Glide;
 import com.example.chatlistassignment.R;
+import com.example.chatlistassignment.databinding.FragmentDataEntryBinding;
 import com.example.chatlistassignment.model.User;
 import com.example.chatlistassignment.utils.SaveBitmap;
 import com.example.chatlistassignment.viewmodel.FragmentViewModel;
@@ -55,6 +57,8 @@ public class DataEntryFragment extends Fragment implements View.OnClickListener 
 
     boolean isEditInfoActivity;
 
+    FragmentDataEntryBinding fragmentDataEntryBinding;
+
     private final int REQUEST_CODE_CAMERA = 100;
     private final int REQUEST_CODE_GALLERY = 101;
 
@@ -68,7 +72,8 @@ public class DataEntryFragment extends Fragment implements View.OnClickListener 
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
 
-        View view = inflater.inflate(R.layout.fragment_data_entry, container, false);
+        fragmentDataEntryBinding = DataBindingUtil.inflate(inflater, R.layout.fragment_data_entry, container, false);
+        View view = fragmentDataEntryBinding.getRoot();
 
         if (getArguments() != null)
             isEditInfoActivity = getArguments().getBoolean("IsEditInfoActivity");
@@ -323,24 +328,28 @@ public class DataEntryFragment extends Fragment implements View.OnClickListener 
         textViewBirthday.setText(R.string.birthday_selected);
         imageViewProfilePic.setImageDrawable(null);
         imageViewProfilePic.setImageResource(R.drawable.ic_baseline_person_24);
+        profilePicPath = "";
 
         editTextContactNumber2.setVisibility(View.GONE);
         editTextContactNumber3.setVisibility(View.GONE);
     }
 
     private void displayEditInfo(User user) {
-        editTextUserName.setText(user.getName());
-        editTextContactNumber.setText(user.getContactNumber());
 
-        String birthDate = "Birthday selected is :" + user.getDateOfBirth();
-        textViewBirthday.setText(birthDate);
+        fragmentDataEntryBinding.setUser(user);
+
+//        editTextUserName.setText(user.getName());
+//        editTextContactNumber.setText(user.getContactNumber());
+
+//        String birthDate = "Birthday selected is :" + user.getDateOfBirth();
+//        textViewBirthday.setText(birthDate);
 
         updateProfilePic(user.getProfilePic());
 
         editTextContactNumber2.setVisibility(View.VISIBLE);
         editTextContactNumber3.setVisibility(View.VISIBLE);
-        editTextContactNumber2.setText(user.getContactNumber2());
-        editTextContactNumber3.setText(user.getContactNumber3());
+//        editTextContactNumber2.setText(user.getContactNumber2());
+//        editTextContactNumber3.setText(user.getContactNumber3());
 
         this.user = user;
     }

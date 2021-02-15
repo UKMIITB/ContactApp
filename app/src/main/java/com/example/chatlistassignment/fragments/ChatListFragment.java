@@ -120,7 +120,7 @@ public class ChatListFragment extends Fragment implements ItemClickListener {
 
             @Override
             public void onItemRangeInserted(int positionStart, int itemCount) {
-                recyclerViewChatList.scrollToPosition(positionStart);
+                recyclerViewChatList.scrollToPosition(0);
                 super.onItemRangeInserted(positionStart, itemCount);
                 chatListRecyclerViewAdapter.notifyDataSetChanged();
             }

@@ -1,7 +1,6 @@
 package com.example.chatlistassignment.adapters;
 
 import android.net.Uri;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -69,7 +68,6 @@ public class ChatListRecyclerViewAdapter extends PagedListAdapter<User, ChatList
     }
 
     private void setUpHeaderData(User user, TextView textViewHeader, int position) {
-        Log.d("TAG", "setUpHeaderData position: " + position);
         if (user == null)
             return;
 

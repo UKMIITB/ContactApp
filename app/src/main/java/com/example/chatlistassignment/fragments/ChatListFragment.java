@@ -45,9 +45,6 @@ public class ChatListFragment extends Fragment implements ItemClickListener {
 
     boolean isFragmentActive = false;
 
-    private final String TAG = "TAG";
-
-
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);

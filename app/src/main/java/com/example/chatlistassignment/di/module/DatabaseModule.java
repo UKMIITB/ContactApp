@@ -4,7 +4,6 @@ import android.content.Context;
 
 import androidx.room.Room;
 
-import com.example.chatlistassignment.MyApplication;
 import com.example.chatlistassignment.repository.LocalRepository;
 import com.example.chatlistassignment.repository.room.ContactDao;
 import com.example.chatlistassignment.repository.room.Database;
@@ -25,9 +24,9 @@ public class DatabaseModule {
 
     @Provides
     @Singleton
-    public static Database provideDatabase(@ApplicationContext Context context){
+    public static Database provideDatabase(@ApplicationContext Context context) {
         return Room.databaseBuilder(context, Database.class, "user_database")
-               .build();
+                .build();
     }
 
     @Provides

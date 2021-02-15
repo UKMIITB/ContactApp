@@ -1,0 +1,114 @@
+{
+  "formatVersion": 1,
+  "database": {
+    "version": 2,
+    "identityHash": "bfdc7f478f4fee788c9265b5bc07265c",
+    "entities": [
+      {
+        "tableName": "UserDB",
+        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`_id` INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL, `name` TEXT, `contactNumber` TEXT, `contactNumber2` TEXT, `contactNumber3` TEXT, `profilePic` TEXT, `dateOfBirth` TEXT, `date` INTEGER)",
+        "fields": [
+          {
+            "fieldPath": "_id",
+            "columnName": "_id",
+            "affinity": "INTEGER",
+            "notNull": true
+          },
+          {
+            "fieldPath": "name",
+            "columnName": "name",
+            "affinity": "TEXT",
+            "notNull": false
+          },
+          {
+            "fieldPath": "contactNumber",
+            "columnName": "contactNumber",
+            "affinity": "TEXT",
+            "notNull": false
+          },
+          {
+            "fieldPath": "contactNumber2",
+            "columnName": "contactNumber2",
+            "affinity": "TEXT",
+            "notNull": false
+          },
+          {
+            "fieldPath": "contactNumber3",
+            "columnName": "contactNumber3",
+            "affinity": "TEXT",
+            "notNull": false
+          },
+          {
+            "fieldPath": "profilePic",
+            "columnName": "profilePic",
+            "affinity": "TEXT",
+            "notNull": false
+          },
+          {
+            "fieldPath": "dateOfBirth",
+            "columnName": "dateOfBirth",
+            "affinity": "TEXT",
+            "notNull": false
+          },
+          {
+            "fieldPath": "date",
+            "columnName": "date",
+            "affinity": "INTEGER",
+            "notNull": false
+          }
+        ],
+        "primaryKey": {
+          "columnNames": [
+            "_id"
+          ],
+          "autoGenerate": true
+        },
+        "indices": [],
+        "foreignKeys": []
+      },
+      {
+        "tableName": "ContactDB",
+        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`_id` TEXT NOT NULL, `name` TEXT, `number` TEXT, `numberType` TEXT, PRIMARY KEY(`_id`))",
+        "fields": [
+          {
+            "fieldPath": "_id",
+            "columnName": "_id",
+            "affinity": "TEXT",
+            "notNull": true
+          },
+          {
+            "fieldPath": "name",
+            "columnName": "name",
+            "affinity": "TEXT",
+            "notNull": false
+          },
+          {
+            "fieldPath": "number",
+            "columnName": "number",
+            "affinity": "TEXT",
+            "notNull": false
+          },
+          {
+            "fieldPath": "numberType",
+            "columnName": "numberType",
+            "affinity": "TEXT",
+            "notNull": false
+          }
+        ],
+        "primaryKey": {
+          "columnNames": [
+            "_id"
+          ],
+          "autoGenerate": false
+        },
+        "indices": [],
+        "foreignKeys": []
+      }
+    ],
+    "views": [],
+    "setupQueries": [
+      "CREATE TABLE IF NOT EXISTS room_master_table (id INTEGER PRIMARY KEY,identity_hash TEXT)",
+      "INSERT OR REPLACE INTO room_master_table (id,identity_hash) VALUES(42, 'bfdc7f478f4fee788c9265b5bc07265c')"
+    ]
+  }
+}

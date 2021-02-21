@@ -21,7 +21,6 @@ import dagger.hilt.components.SingletonComponent;
 @InstallIn(SingletonComponent.class)
 public class DatabaseModule {
 
-
     @Provides
     @Singleton
     public static Database provideDatabase(@ApplicationContext Context context) {

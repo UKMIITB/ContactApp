@@ -12,6 +12,7 @@ import java.util.List;
 import javax.inject.Inject;
 
 import io.reactivex.Completable;
+import io.reactivex.Flowable;
 
 public class LocalRepository {
 
@@ -66,4 +67,7 @@ public class LocalRepository {
         return contactDao.getQueryContact(query);
     }
 
+    public Flowable<List<Contact>> getAllContactsList() {
+        return contactDao.getAllContactsList();
+    }
 }

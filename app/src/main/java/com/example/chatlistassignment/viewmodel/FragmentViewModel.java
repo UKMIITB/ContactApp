@@ -1,6 +1,8 @@
 package com.example.chatlistassignment.viewmodel;
 
 import android.app.Application;
+import android.content.Context;
+import android.content.SharedPreferences;
 import android.graphics.PorterDuff;
 import android.util.Log;
 import android.view.View;
@@ -44,6 +46,9 @@ public class FragmentViewModel extends AndroidViewModel {
     public LiveData<PagedList<Contact>> queryContactList;
 
     SyncNativeContacts syncNativeContacts;
+
+    private final String SHARED_PREF_CONTACT_SYNC_KEY = "ContactSync";
+    private final String SHARED_PREF_FILE_NAME = "SharedPreference";
 
     @Inject
     public FragmentViewModel(@NonNull Application application, LocalRepository repository) {
@@ -269,6 +274,7 @@ public class FragmentViewModel extends AndroidViewModel {
                     public void onSuccess(@io.reactivex.annotations.NonNull List<Contact> contactList) {
                         Log.e(TAG, "onSuccess: Inside complete sync   -->>  " + contactList.size());
                         setContactListSize(contactList.size());
+                        setIsFullContactSyncCompleted(true);
                     }
 
                     @Override
@@ -276,6 +282,10 @@ public class FragmentViewModel extends AndroidViewModel {
                         Log.e(TAG, "onError: Inside complete sync error ->> " + e.getMessage());
                     }
                 });
+    }
+
+    public void deltaContactSync() {
+        //TODO -> Complete delta contact sync part
     }
 
 
@@ -298,5 +308,17 @@ public class FragmentViewModel extends AndroidViewModel {
                         Log.d("TAG", "Inside onError of addContactListDB in SyncNativeContacts.: " + e.getMessage());
                     }
                 });
+    }
+
+    private void setIsFullContactSyncCompleted(boolean aBoolean) {
+        SharedPreferences sharedPreferences = getApplication().getSharedPreferences(SHARED_PREF_FILE_NAME, Context.MODE_PRIVATE);
+        SharedPreferences.Editor editor = sharedPreferences.edit();
+        editor.putBoolean(SHARED_PREF_CONTACT_SYNC_KEY, aBoolean);
+        editor.apply();
+    }
+
+    public boolean getIsFullContactSyncCompleted() {
+        SharedPreferences sharedPreferences = getApplication().getSharedPreferences(SHARED_PREF_FILE_NAME, Context.MODE_PRIVATE);
+        return sharedPreferences.getBoolean(SHARED_PREF_CONTACT_SYNC_KEY, false);
     }
 }

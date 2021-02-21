@@ -47,9 +47,7 @@ public class MainActivity extends AppCompatActivity {
     FragmentViewModel fragmentViewModel;
 
     ContactsChangeListener contactsChangeListener;
-
-    private CompositeDisposable compositeDisposable = new CompositeDisposable();
-
+    private final CompositeDisposable compositeDisposable = new CompositeDisposable();
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -94,7 +92,12 @@ public class MainActivity extends AppCompatActivity {
     }
 
     private void syncContacts() {
-        fragmentViewModel.completeContactSync();
+        if (!fragmentViewModel.getIsFullContactSyncCompleted())
+            fragmentViewModel.completeContactSync();
+        else
+            //fragmentViewModel.deltaContactSync();
+            //TODO -> Change this to deltaContactSync call
+            fragmentViewModel.completeContactSync();
     }
 
     @Override

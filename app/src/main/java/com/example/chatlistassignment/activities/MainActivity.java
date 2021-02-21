@@ -25,7 +25,16 @@ import com.example.chatlistassignment.utils.ContactsChangeListener;
 import com.example.chatlistassignment.viewmodel.FragmentViewModel;
 import com.google.android.material.tabs.TabLayout;
 
+import java.util.concurrent.TimeUnit;
+
 import dagger.hilt.android.AndroidEntryPoint;
+import io.reactivex.Observable;
+import io.reactivex.ObservableEmitter;
+import io.reactivex.ObservableOnSubscribe;
+import io.reactivex.android.schedulers.AndroidSchedulers;
+import io.reactivex.disposables.CompositeDisposable;
+import io.reactivex.disposables.Disposable;
+import io.reactivex.schedulers.Schedulers;
 
 @AndroidEntryPoint
 public class MainActivity extends AppCompatActivity {
@@ -38,7 +47,7 @@ public class MainActivity extends AppCompatActivity {
     FragmentViewModel fragmentViewModel;
 
     ContactsChangeListener contactsChangeListener;
-
+    private final CompositeDisposable compositeDisposable = new CompositeDisposable();
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -83,7 +92,12 @@ public class MainActivity extends AppCompatActivity {
     }
 
     private void syncContacts() {
-        fragmentViewModel.completeContactSync();
+        if (!fragmentViewModel.getIsFullContactSyncCompleted())
+            fragmentViewModel.completeContactSync();
+        else
+            //fragmentViewModel.deltaContactSync();
+            //TODO -> Change this to deltaContactSync call
+            fragmentViewModel.completeContactSync();
     }
 
     @Override
@@ -109,21 +123,51 @@ public class MainActivity extends AppCompatActivity {
         MenuItem searchViewItem = menu.findItem(R.id.search);
         SearchView searchView = (SearchView) searchViewItem.getActionView();
 
-        searchView.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
+        Observable.create(new ObservableOnSubscribe<String>() {
             @Override
-            public boolean onQueryTextSubmit(String query) {
-                searchView.clearFocus();
+            public void subscribe(@io.reactivex.annotations.NonNull ObservableEmitter<String> emitter) throws Exception {
+                searchView.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
+                    @Override
+                    public boolean onQueryTextSubmit(String query) {
+                        searchView.clearFocus();
+                        return false;
+                    }
 
-                FragmentViewModel.setQueryString(query);
-                return false;
-            }
+                    @Override
+                    public boolean onQueryTextChange(String newText) {
+                        if (!emitter.isDisposed())
+                            emitter.onNext(newText);
 
-            @Override
-            public boolean onQueryTextChange(String newText) {
-                FragmentViewModel.setQueryString(newText);
-                return false;
+                        return false;
+                    }
+                });
             }
-        });
+        })
+                .subscribeOn(Schedulers.io())
+                .debounce(500, TimeUnit.MILLISECONDS)
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe(new io.reactivex.Observer<String>() {
+                    @Override
+                    public void onSubscribe(@io.reactivex.annotations.NonNull Disposable d) {
+                        compositeDisposable.add(d);
+                    }
+
+                    @Override
+                    public void onNext(@io.reactivex.annotations.NonNull String queryString) {
+                        FragmentViewModel.setQueryString(queryString);
+                    }
+
+                    @Override
+                    public void onError(@io.reactivex.annotations.NonNull Throwable e) {
+
+                    }
+
+                    @Override
+                    public void onComplete() {
+
+                    }
+                });
+
 
         return super.onCreateOptionsMenu(menu);
     }
@@ -147,5 +191,6 @@ public class MainActivity extends AppCompatActivity {
     protected void onDestroy() {
         super.onDestroy();
         getContentResolver().unregisterContentObserver(contactsChangeListener);
+        compositeDisposable.clear();
     }
 }

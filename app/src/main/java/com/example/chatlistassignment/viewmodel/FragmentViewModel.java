@@ -22,12 +22,14 @@ import com.example.chatlistassignment.model.User;
 import com.example.chatlistassignment.repository.LocalRepository;
 import com.example.chatlistassignment.utils.SyncNativeContacts;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import javax.inject.Inject;
 
 import dagger.hilt.android.lifecycle.HiltViewModel;
 import io.reactivex.CompletableObserver;
+import io.reactivex.Single;
 import io.reactivex.SingleObserver;
 import io.reactivex.android.schedulers.AndroidSchedulers;
 import io.reactivex.disposables.Disposable;
@@ -285,13 +287,59 @@ public class FragmentViewModel extends AndroidViewModel {
     }
 
     public void deltaContactSync() {
-        //TODO -> Complete delta contact sync part
+        syncNativeContacts = new SyncNativeContacts(getApplication());
+
+        Single.zip(syncNativeContacts.getContactArrayList(), repository.getAllContactsList(), (nativeContactList, dbContactList) -> {
+            List<Contact> addList = new ArrayList<>();
+            List<Contact> deleteList = new ArrayList<>();
+
+            addList.addAll(nativeContactList);
+            addList.removeAll(dbContactList);
+
+            deleteList.addAll(dbContactList);
+            deleteList.removeAll(nativeContactList);
+
+            addContactListToDB(addList);
+
+            for (Contact contact : deleteList) {
+                deleteContact(contact);
+            }
+
+            setContactListSize(dbContactList.size() + addList.size() - deleteList.size());
+
+            return true;
+        })
+                .subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe();
+    }
+
+    private void deleteContact(Contact contact) {
+        repository.deleteContact(contact)
+                .subscribeOn(Schedulers.io())
+                .subscribe(new CompletableObserver() {
+                    @Override
+                    public void onSubscribe(@io.reactivex.annotations.NonNull Disposable d) {
+                        Log.d(TAG, "onSubscribe of deleteContact: ");
+                    }
+
+                    @Override
+                    public void onComplete() {
+                        Log.d(TAG, "onComplete of delete Contact: ");
+                    }
+
+                    @Override
+                    public void onError(@io.reactivex.annotations.NonNull Throwable e) {
+                        Log.d(TAG, "onError of delete contact: ");
+                    }
+                });
     }
 
 
     private void addContactListToDB(List<Contact> contactList) {
 
         repository.addListOfContact(contactList)
+                .subscribeOn(Schedulers.io())
                 .subscribe(new CompletableObserver() {
                     @Override
                     public void onSubscribe(@io.reactivex.annotations.NonNull Disposable d) {

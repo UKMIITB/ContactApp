@@ -95,9 +95,8 @@ public class MainActivity extends AppCompatActivity {
         if (!fragmentViewModel.getIsFullContactSyncCompleted())
             fragmentViewModel.completeContactSync();
         else
-            //fragmentViewModel.deltaContactSync();
-            //TODO -> Change this to deltaContactSync call
-            fragmentViewModel.completeContactSync();
+            fragmentViewModel.deltaContactSync();
+//            fragmentViewModel.completeContactSync();
     }
 
     @Override

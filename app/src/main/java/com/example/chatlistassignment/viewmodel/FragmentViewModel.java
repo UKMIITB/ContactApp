@@ -33,6 +33,7 @@ import io.reactivex.Single;
 import io.reactivex.SingleObserver;
 import io.reactivex.android.schedulers.AndroidSchedulers;
 import io.reactivex.disposables.Disposable;
+import io.reactivex.functions.BiFunction;
 import io.reactivex.schedulers.Schedulers;
 
 @HiltViewModel
@@ -289,26 +290,31 @@ public class FragmentViewModel extends AndroidViewModel {
     public void deltaContactSync() {
         syncNativeContacts = new SyncNativeContacts(getApplication());
 
-        Single.zip(syncNativeContacts.getContactArrayList(), repository.getAllContactsList(), (nativeContactList, dbContactList) -> {
-            List<Contact> addList = new ArrayList<>();
-            List<Contact> deleteList = new ArrayList<>();
+        Single.zip(syncNativeContacts.getContactArrayList(), repository.getAllContactsList(),
+                new BiFunction<List<Contact>, List<Contact>, Boolean>() {
+                    @io.reactivex.annotations.NonNull
+                    @Override
+                    public Boolean apply(@io.reactivex.annotations.NonNull List<Contact> nativeContactList, @io.reactivex.annotations.NonNull List<Contact> dbContactList) throws Exception {
+                        List<Contact> addList = new ArrayList<>();
+                        List<Contact> deleteList = new ArrayList<>();
 
-            addList.addAll(nativeContactList);
-            addList.removeAll(dbContactList);
+                        addList.addAll(nativeContactList);
+                        addList.removeAll(dbContactList);
 
-            deleteList.addAll(dbContactList);
-            deleteList.removeAll(nativeContactList);
+                        deleteList.addAll(dbContactList);
+                        deleteList.removeAll(nativeContactList);
 
-            addContactListToDB(addList);
+                        FragmentViewModel.this.addContactListToDB(addList);
 
-            for (Contact contact : deleteList) {
-                deleteContact(contact);
-            }
+                        for (Contact contact : deleteList) {
+                            FragmentViewModel.this.deleteContact(contact);
+                        }
 
-            setContactListSize(dbContactList.size() + addList.size() - deleteList.size());
+                        FragmentViewModel.this.setContactListSize(dbContactList.size() + addList.size() - deleteList.size());
 
-            return true;
-        })
+                        return true;
+                    }
+                })
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe();

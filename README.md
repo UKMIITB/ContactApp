@@ -15,3 +15,13 @@ In this project following concepts have been used and implemented:
 11. Native contact change listener
 12. Dagger Hilt dependency injection used
 13. MVVM design architecture
+
+# Some glimpse of App
+
+Order of images appearing are:
+Added data list -> Data entry page -> Native contact list page -> native contact search result page
+
+![ezgif com-resize](https://user-images.githubusercontent.com/36126610/115123839-8bae2780-9fdc-11eb-8c99-6303926fa77d.gif)
+
+# Demo of App
+

@@ -25,3 +25,4 @@ Added data list -> Data entry page -> Native contact list page -> native contact
 
 # Demo of App
 
+https://user-images.githubusercontent.com/36126610/115125231-4beb3e00-9fe4-11eb-8df0-e4a14aeac006.mp4

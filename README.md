@@ -21,7 +21,7 @@ In this project following concepts have been used and implemented:
 Order of images appearing are:
 Added data list -> Data entry page -> Native contact list page -> native contact search result page
 
-![ezgif com-resize](https://user-images.githubusercontent.com/36126610/115123839-8bae2780-9fdc-11eb-8c99-6303926fa77d.gif)
+![ezgif com-gif-to-mp4](https://user-images.githubusercontent.com/36126610/115123966-4dfdce80-9fdd-11eb-8fb1-930e53a7b3d8.gif)
 
 # Demo of App
 
